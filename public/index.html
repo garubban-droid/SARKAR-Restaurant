@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fffaf0">
+<title>সরকার রেস্টুরেন্ট & বিরিয়ানি</title>
+<style>
+:root{--bg:#fffdf8;--cream:#fff5df;--card:#fff;--ink:#24170b;--muted:#796d5d;--gold:#b98117;--gold2:#e5c66c;--green:#087b4d;--red:#a53127;--line:#eadfc8;--shadow:0 12px 30px rgba(76,48,10,.11)}
+*{box-sizing:border-box}html,body{margin:0;background:linear-gradient(145deg,#fff,#fffaf0 60%,#f8eedb);color:var(--ink);font-family:Arial,"Noto Sans Bengali",sans-serif}.app{width:min(560px,100%);margin:auto;min-height:100vh;padding-bottom:82px}.page{display:none}.page.active{display:block}
+.home-header{background:linear-gradient(135deg,#fffdf8 0%,#fff5dc 48%,#fffdf8 100%);border-bottom:1px solid #e6d39e;padding:6px 9px 6px;box-shadow:0 5px 18px rgba(74,46,8,.08)}
+.header-top{display:flex;align-items:center;gap:7px;position:relative;min-height:43px;padding:0 43px 0 0}.brand-wrap{min-width:0;flex:1}.brand-bn{font-size:16.5px;line-height:1.05;font-weight:1000;white-space:nowrap;color:#4d2b06;letter-spacing:-.35px;text-shadow:0 1px 0 #fff}.brand-en{font-size:7px;letter-spacing:1.05px;font-weight:1000;color:#9b7a42;margin-top:3px;white-space:nowrap}.logo{width:43px;height:43px;object-fit:cover;border-radius:13px;border:2px solid var(--gold2);background:#fff;box-shadow:0 5px 14px rgba(87,55,10,.14);flex:none}.logo-fallback{display:grid;place-items:center;font-size:20px}.open-mini{position:absolute;right:0;top:1px;transform-style:preserve-3d;animation:openSignal3D 2.8s ease-in-out infinite;background:linear-gradient(135deg,#edfff6,#d8f5e8);border:1px solid #b6dfcd;color:var(--green);border-radius:9px;padding:4px 7px;font-size:7px;font-weight:1000;letter-spacing:.45px;box-shadow:0 3px 8px rgba(8,123,77,.10)}.open-mini.closed{animation:openSignal3D 2.8s ease-in-out infinite;background:linear-gradient(135deg,#fff5f3,#ffe6e2);border-color:#edc1bb;color:var(--red)}@keyframes openSignal3D{0%,100%{transform:perspective(160px) rotateY(-8deg) rotateX(0deg) translateZ(0);box-shadow:0 3px 8px rgba(8,123,77,.10)}50%{transform:perspective(160px) rotateY(8deg) rotateX(4deg) translateZ(4px);box-shadow:0 7px 14px rgba(8,123,77,.20)}}.header-open-space{display:none}
+.address{font-size:8px;line-height:1.2;font-weight:900;color:#6b3f0b;text-shadow:0 1px 0 #fff;margin:4px 1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.address-en{font-size:6.7px;color:#8b6a35}.ticker{height:23px;margin-top:5px;border-radius:8px;background:linear-gradient(90deg,#76261f,#9b382e,#76261f);display:flex;align-items:center;color:#fff;overflow:hidden;box-shadow:0 4px 12px rgba(118,38,31,.12)}.ticker-icon{font-size:13px;padding:0 7px;display:inline-block;transform-style:preserve-3d;animation:dailyIcon3D 2.4s linear infinite;filter:drop-shadow(0 2px 2px rgba(0,0,0,.28))}@keyframes dailyIcon3D{0%{transform:perspective(120px) rotateY(0deg) translateZ(0)}50%{transform:perspective(120px) rotateY(180deg) translateZ(5px)}100%{transform:perspective(120px) rotateY(360deg) translateZ(0)}}.ticker-window{overflow:hidden;white-space:nowrap;flex:1}.ticker-track{display:inline-block;padding-left:100%;animation:ticker 22s linear infinite;font-size:9px;font-weight:900}@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+.hero{margin:8px 12px 9px;height:128px;border-radius:17px;overflow:hidden;position:relative;background:#e9ddc4;box-shadow:0 9px 24px rgba(76,48,10,.13);border:1px solid #dfcfa9}.hero img,.hero video,.hero iframe{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.08),rgba(0,0,0,.66))}.hero-copy{position:absolute;z-index:2;left:13px;bottom:9px;color:#fff}.hero-copy h1{font-size:16px;margin:0 0 3px;font-weight:1000;text-shadow:0 2px 7px #000}.hero-copy p{font-size:7.5px;margin:0 0 5px;font-weight:800}.hero-copy button,.order{border:0;border-radius:11px;background:linear-gradient(145deg,#fff,#f5ead3);color:#684207;font-weight:1000;padding:7px 11px;font-size:9px;box-shadow:0 4px 0 #c9a45b,0 7px 13px rgba(70,42,5,.22);transform:translateY(-1px)}.hero-copy button:active,.order:active{transform:translateY(2px);box-shadow:0 2px 0 #c9a45b,0 4px 8px rgba(70,42,5,.18)}.section{padding:6px 13px 6px}.section h2{margin:0;font-size:18px;font-weight:1000}.section small{display:block;font-size:7px;color:#a0875d;font-weight:900;margin-top:3px;letter-spacing:.6px}
+.cards{padding:0 12px 17px}.food{background:linear-gradient(145deg,#fff,#fffaf0);border:1px solid #eadfc8;border-radius:18px;overflow:hidden;box-shadow:0 10px 25px rgba(76,48,10,.10),0 2px 0 #ead7aa;margin-bottom:13px}.media{height:245px;position:relative;background:linear-gradient(135deg,#f3ead8,#dfcca0);overflow:hidden}.media img,.media video{width:100%;height:100%;object-fit:cover;display:block}.media iframe{width:100%;height:100%;border:0}.fallback{height:100%;display:grid;place-items:center;font-size:58px}.tag{position:absolute;top:10px;left:10px;background:linear-gradient(145deg,#d5a33b,#ae7612);color:#fff;border-radius:999px;padding:5px 8px;font-size:7.5px;font-weight:1000;box-shadow:0 3px 7px #6c450533}.autoplay{position:absolute;top:10px;right:10px;background:#0008;color:#fff;border-radius:999px;padding:5px 7px;font-size:7px;font-weight:900}.food-body{padding:10px 12px 12px}.food-name{font-size:16px;line-height:1.12;font-weight:1000}.food-en{font-size:7px;color:#a1885d;font-weight:900;margin-top:3px;letter-spacing:.7px}.food-desc{font-size:9px;color:var(--muted);line-height:1.4;margin-top:5px}.food-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:8px}.price{font-size:17px;color:#9c6a10;font-weight:1000}.order{padding:7px 12px;font-size:9px;background:linear-gradient(145deg,#fffdf7,#f0dfbb);box-shadow:0 4px 0 #b9892c,0 7px 12px rgba(70,42,5,.18)}
+.simple{padding:18px 14px 9px}.simple h2{margin:0;font-size:22px;font-weight:1000}.simple small{font-size:8px;color:#9c845e;font-weight:900}.menu-card{margin:0 12px 14px}.menu-card .media{height:230px}
+.box{margin:0 12px 12px;padding:14px;background:#fff;border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.row{display:flex;gap:9px;align-items:center}.grow{flex:1}.qty{display:flex;align-items:center;gap:7px}.qty button{width:30px;height:30px;border:0;border-radius:8px;background:#f0e2c5;font-size:17px}.summary{margin:0 12px 12px;padding:14px;background:#fff;border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.line{display:flex;justify-content:space-between;padding:4px 0;font-size:12px}.total{border-top:1px solid var(--line);margin-top:7px;padding-top:10px;font-size:17px}.cta{width:calc(100% - 24px);margin:0 12px;border:0;border-radius:12px;padding:14px;background:linear-gradient(135deg,#d09d2e,#a96f10);color:#fff;font-size:14px;font-weight:1000}.empty{text-align:center;padding:48px 18px;color:#8b806f}.status-pill{display:inline-block;padding:6px 9px;border-radius:999px;background:#e9f8f0;color:#087b4d;font-size:9px;font-weight:1000}.track{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:10px;color:#6d6254}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(560px,100%);height:77px;background:rgba(255,253,248,.98);backdrop-filter:blur(12px);border-top:1px solid #e5dac4;display:flex;justify-content:space-around;z-index:50}.nav{border:0;background:none;color:#958b7d;font-size:10px;font-weight:900}.nav span{display:block;font-size:24px;margin:6px 0 2px}.nav.active{color:#a87515}
+.modal{display:none;position:fixed;inset:0;background:#0009;z-index:100;align-items:flex-end}.modal.show{display:flex}.sheet{width:min(560px,100%);margin:auto;background:#fffdf8;border-radius:22px 22px 0 0;padding:18px;position:relative;box-shadow:0 -10px 35px rgba(48,29,5,.18);max-height:90vh;overflow-y:auto}.sheet-close{position:absolute;right:13px;top:11px;width:31px;height:31px;border:0;border-radius:50%;background:linear-gradient(145deg,#fff,#eadfc8);color:#6e4709;font-size:16px;font-weight:1000;box-shadow:0 4px 0 #c9a45b,0 6px 12px rgba(70,42,5,.16);cursor:pointer}.sheet-close:active{transform:translateY(2px);box-shadow:0 2px 0 #c9a45b}.sheet-back{border:0;background:transparent;color:#8d651e;font-size:9px;font-weight:1000;padding:0;margin:0 0 8px;cursor:pointer}.sheet input,.sheet textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:5px 0 11px}.sheet label{font-size:10px;font-weight:900}
+  /* Checkout 2-column layout */
+.grid2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.grid2 > div{
+  min-width:0;
+}
+
+.grid2 input{
+  width:100%;
+  height:46px;
+  margin:4px 0 8px;
+}
+
+.loc-btn{
+  width:100%;
+  height:46px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(135deg,#15803d,#0b8f4d);
+  color:#fff;
+  font-weight:900;
+  margin:8px 0;
+}
+
+/* ছোট মোবাইলে ২টা ঘর এক লাইনে থাকবে */
+@media (max-width:360px){
+  .grid2{
+    gap:8px;
+  }
+  .grid2 input{
+    height:42px;
+  }
+}
+
+
+.checkout-location-highlight{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#e9fff1,#d7f6e4);border:1px solid #b9e4ca;border-radius:13px;padding:11px 12px;margin:10px 0;color:#09683f}.checkout-location-highlight b{font-size:11px}.checkout-location-highlight small{display:block;font-size:8px;color:#4d7b65;margin-top:2px}.address-card{border:1px solid var(--line);border-radius:13px;background:#fff;padding:11px;margin-top:8px}.address-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.address-card-head b{font-size:11px}.edit-address{border:0;background:#f5ead4;color:#79520f;border-radius:8px;padding:7px 10px;font-size:9px;font-weight:1000}.address-preview{font-size:10px;line-height:1.5;color:#65594b;margin-top:6px}.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice-card{position:relative;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;cursor:pointer}.choice-card input{position:absolute;opacity:0;pointer-events:none}.choice-card:has(input:checked){border:2px solid #b98117;background:#fff9ed;box-shadow:0 0 0 2px #f6e7bf}.choice-card b{display:block;font-size:10px}.choice-card small{display:block;font-size:8px;color:#827565;margin-top:3px}.delivery-schedule{display:none}.checkout-bottom{position:sticky;bottom:-18px;background:#fffdf8;padding:12px 0 2px;margin-top:10px;border-top:1px solid #eadfc8}.place-row{display:flex;align-items:center;gap:10px}.place-total{flex:1}.place-total small{display:block;font-size:8px;color:#8b7a62}.place-total b{font-size:18px;color:#9b6810}.place-btn{flex:1.2;border:0;border-radius:12px;padding:13px;background:linear-gradient(135deg,#d09d2e,#a96f10);color:#fff;font-size:13px;font-weight:1000}
+.profile-hero{display:flex;align-items:center;gap:10px}.avatar{width:48px;height:48px;border-radius:16px;background:#fff4d9;display:grid;place-items:center;font-size:24px}.profile-hero h3{margin:0;font-size:15px}.profile-hero p{margin:3px 0 0;font-size:9px;color:var(--muted)}.profile-action{border:0;border-radius:10px;background:#b98117;color:#fff;padding:8px 9px;font-weight:1000;font-size:9px}.profile-menu{padding:6px}.profile-menu button{width:100%;display:flex;align-items:center;gap:10px;border:0;border-bottom:1px solid var(--line);background:#fff;padding:13px 7px;text-align:left;font:inherit;color:var(--ink)}.profile-menu button:last-child{border-bottom:0}.profile-menu button span{flex:1;font-size:11px;font-weight:900}.profile-menu button b{color:#a87515}.checkout-user-card,.checkout-section{margin:10px 0}.location-card{background:#eef9f2;border:1px solid #cfe8d8;border-radius:12px;padding:10px;margin-top:8px}.location-card b{display:block;font-size:11px}.location-card small{display:block;font-size:9px;color:#587264;margin-top:3px}.loc-btn{height:38px;margin:8px 0 0;background:#087b4d}.section-title{font-size:11px;font-weight:1000;margin-bottom:7px}.coupon-row{display:flex;gap:7px}.coupon-row input{flex:1;margin:0}.coupon-row button{border:0;border-radius:9px;padding:0 13px;background:#f0e2c5;color:#54380c;font-weight:1000}.payment-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}.payment-option{display:flex;align-items:center;gap:7px;padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}.payment-option input{width:auto;margin:0}.online-methods{display:flex;gap:7px;margin-top:8px}.online-methods span{flex:1;text-align:center;padding:8px;border-radius:8px;background:#f5ead4;font-size:9px;font-weight:900}.hidden{display:none!important}.checkout-note{display:block;margin-top:8px;color:#8c7a5f;font-size:8px}
+
+/* V9 checkout refinements */
+.checkout-sheet{position:relative}.checkout-back{display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;color:#79520f;font-weight:1000;font-size:11px;padding:2px 0 8px;cursor:pointer}.checkout-back .back-icon{font-size:20px;line-height:1}.checkout-location-highlight{cursor:pointer}.checkout-location-highlight .signal{font-size:20px;line-height:1}.order-summary-frame{border:1px solid var(--line);border-radius:16px;background:#fff;padding:12px;margin-top:10px;box-shadow:0 5px 18px rgba(90,60,10,.05)}.order-summary-frame .section-title{font-size:12px;margin-bottom:9px}.checkout-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee5d5}.checkout-item:last-child{border-bottom:0}.checkout-item img,.checkout-item .item-image{width:92px;height:92px;flex:0 0 92px;border-radius:14px;object-fit:cover;background:#f5ead4;display:grid;place-items:center;font-size:34px}.checkout-item .item-info{flex:1;min-width:0}.checkout-item .item-name{font-size:12px;font-weight:1000;line-height:1.35}.checkout-item .item-price{font-size:11px;color:#9b6810;margin-top:5px;font-weight:900}.checkout-item .qty-controls{display:flex;align-items:center;gap:5px;margin-top:8px}.checkout-item .qty-controls button{width:28px;height:28px;border:1px solid #d9ccb4;border-radius:8px;background:#fff;font-weight:1000}.checkout-item .qty-controls b{min-width:22px;text-align:center;font-size:10px}.checkout-coupon{margin-top:12px;padding-top:11px;border-top:1px dashed #ddcfb5}.checkout-coupon .section-title{margin-bottom:7px}.order-totals{border-top:1px solid #e8ddca;margin-top:12px;padding-top:10px}.order-totals .line{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:11px}.order-totals .line.total{font-size:15px;padding-top:9px;margin-top:5px;border-top:1px solid #e8ddca}.order-totals .line.total b{font-size:18px;color:#8f5f0c}.address-page{position:absolute;inset:0;background:#fffdf8;border-radius:22px 22px 0 0;z-index:50;overflow:auto;padding:18px 18px 90px;display:none}.address-page.show{display:block}.address-page h2{font-size:21px;margin:5px 0 4px}.address-page .address-save{width:100%;height:46px;border:0;border-radius:12px;background:#b98117;color:#fff;font-size:13px;font-weight:1000;margin-top:12px}
+
+.status-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.status-step{font-size:8px;color:#9a907f;display:flex;flex-direction:column;gap:4px}.status-step span{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#eee7d9;color:#8b806f;font-weight:1000}.status-step.done{color:#76520e}.status-step.done span{background:#d4eadc;color:#087b4d}.order-card-btn{width:calc(100% - 24px);text-align:left;cursor:pointer;display:block}.order-card-btn:active{transform:scale(.99)}
+.detail-item-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #eee5d5}
+.detail-item-photo-wrap{width:52px;height:52px;flex:0 0 52px;border-radius:9px;background:#f5ead4;display:grid;place-items:center;font-size:22px;overflow:hidden}
+.order-detail-item-photo{width:52px;height:52px;object-fit:cover;display:block}
+.detail-item-name{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px}
+
+.order-rating-box{margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:15px;background:#fff}
+.order-rating-title{font-size:15px;font-weight:1000;margin-bottom:10px}
+.order-rating-stars{display:flex;justify-content:space-between;gap:4px}
+.order-rating-option{border:0;background:transparent;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;color:#6f6659;font-size:8px;font-weight:900;flex:1}
+.order-rating-option .star{font-size:25px;line-height:1;color:#d5cec1}
+.order-rating-option.selected .star{color:#f5b51b}
+.order-rating-option.selected{color:#79520f}
+.order-rating-option{transition:transform .08s ease}
+.order-rating-option:active{transform:scale(.90)}
+.order-review-editor{margin-top:10px;display:none}
+.order-review-editor.show{display:block}
+.order-review-editor textarea{width:100%;min-height:78px;box-sizing:border-box;border:1px solid var(--line);border-radius:11px;padding:10px;resize:vertical;font:inherit}
+.order-review-submit{width:100%;height:42px;margin-top:7px;border:0;border-radius:11px;background:#b98117;color:#fff;font-weight:1000}
+.order-rating-count{display:none!important}
+.order-rating-success{text-align:center;padding:9px;border-radius:10px;background:#e8f7ed;color:#087b4d;font-weight:900;font-size:10px;margin-top:9px}
+.simple-status-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 8px;margin-top:13px}
+.simple-status-step{font-size:9px;color:#9d9588;display:flex;flex-direction:column;gap:5px;min-height:43px}
+.simple-status-signal{font-size:18px;line-height:24px;width:25px;height:25px;display:grid;place-items:center}
+.simple-status-step.status-green{color:#087b4d;font-weight:1000}
+.simple-status-step.status-green .simple-status-signal{filter:drop-shadow(0 0 5px rgba(8,123,77,.25));animation:greenSignal 1.2s ease-in-out infinite}
+@keyframes greenSignal{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.72}}50%{transform:scale(1.08);opacity:.72}}
+
+.food .media{overflow:hidden}.food-video{width:100%;height:100%;border:0;object-fit:cover;display:block}.food .media iframe{pointer-events:none}
+</style>
+</head>
+<body>
+<div class="app">
+<section id="home" class="page active">
+<header class="home-header">
+  <div class="header-top">
+    <div id="openMini" class="open-mini"><span>●</span> OPEN</div>
+    <div class="header-open-space"></div>
+    <div id="logoSlot" class="logo logo-fallback">🍛</div>
+    <div class="brand-wrap"><div id="brandBn" class="brand-bn"></div><div id="brandEn" class="brand-en"></div></div>
+  </div>
+  <div id="address" class="address"></div>
+  <div class="ticker"><div class="ticker-icon">🔔</div><div class="ticker-window"><div id="ticker" class="ticker-track"></div></div></div>
+</header>
+<div id="hero" class="hero"></div>
+<div class="section"><h2 id="popularTitle"></h2><small id="popularSub"></small></div>
+<div id="popularCards" class="cards"></div>
+</section>
+<section id="menu" class="page"><div class="simple"><h2 id="menuTitle"></h2><small id="menuSub"></small></div><div id="menuCards"></div></section>
+<section id="cart" class="page"><div class="simple"><h2 id="cartTitle"></h2><small id="cartSub"></small></div><div id="cartList"></div><div id="cartSummary"></div></section>
+<section id="orders" class="page"><div class="simple"><h2 id="ordersTitle"></h2><small id="ordersSub"></small></div><div id="orderList"></div></section>
+<section id="profile" class="page">
+<div class="simple"><h2 id="profileTitle"></h2><small id="profileSub"></small></div>
+<div class="profile-hero box"><div class="avatar" id="profileAvatar">👤</div><div class="grow"><h3 id="profileName">Guest</h3><p id="profilePhone">Login করে আপনার profile সম্পূর্ণ করুন</p></div><button class="profile-action" id="profileAuthBtn" onclick="openAccount()">Login / Sign up</button></div>
+<div class="box profile-menu">
+<button onclick="openAccount()">👤 <span>Account & Login</span><b>›</b></button>
+<button onclick="openAddressBook()">📍 <span>Saved Address</span><b>›</b></button>
+<button onclick="go('orders')">🧾 <span>My Orders</span><b>›</b></button>
+<button onclick="openReferralCenter()">🗣️ <span>Refer & Earn</span><b>›</b></button>
+<button onclick="openLocationFromProfile()">🛰️ <span>Use Current Location</span><b>›</b></button>
+<button onclick="showProfileAbout()">ℹ️ <span>About & Support</span><b>›</b></button>
+</div>
+<div id="profileContent"></div>
+</section>
+</div>
+<nav class="bottom">
+<button class="nav active" data-page="home" onclick="go('home',this)"><span>⌂</span>Home</button>
+<button class="nav" data-page="menu" onclick="go('menu',this)"><span>☰</span>Menu</button>
+<button class="nav" data-page="cart" onclick="go('cart',this)"><span>🛍</span>Cart</button>
+<button class="nav" data-page="orders" onclick="go('orders',this)"><span>▤</span>Orders</button>
+<button class="nav" data-page="profile" onclick="go('profile',this)"><span>♙</span>Profile</button>
+</nav>
+<div id="orderDetails" class="modal" onclick="if(event.target===this) closeOrderDetails()"><div class="sheet" style="max-height:92vh"><button class="checkout-back" type="button" onclick="closeOrderDetails()"><span class="back-icon">🔙</span><span>ফিরে যান</span></button><div id="orderDetailsBody"></div></div></div>
+<div id="checkout" class="modal" onclick="if(event.target===this) closeCheckout()">
+  <div class="sheet checkout-sheet">
+    <button class="checkout-back" type="button" onclick="closeCheckout()"><span class="back-icon">🔙</span><span>ফিরে যান</span></button>
+    <h2 style="margin:2px 0 4px">Checkout / চেকআউট</h2>
+    <small style="font-size:8px;color:#8b7a62">আপনার অর্ডারটি নিশ্চিত করার আগে সব তথ্য দেখে নিন</small>
+    <div class="checkout-location-highlight" role="button" tabindex="0" onclick="getCurrentLocation()"><div class="signal">📶</div><div style="flex:1"><b>লোকেশন অনুমতি দিন</b></div></div>
+    <div class="box checkout-section"><div class="section-title">📍 ডেলিভারি ঠিকানা</div><div class="address-card"><div class="address-card-head"><b id="checkoutRecipientName">নাম</b><button type="button" class="edit-address" onclick="openAddressEditor()">Edit</button></div><div id="checkoutRecipientPhone" class="address-preview"></div><div id="checkoutAddressPreview" class="address-preview">ঠিকানা যোগ করুন</div></div></div>
+    <div class="order-summary-frame">
+      <div class="section-title">🛍️ অর্ডারের আইটেম</div><div id="checkoutProduct"></div>
+      <div id="couponBox" class="checkout-coupon"><div class="section-title">🎟️ কুপন</div><div class="coupon-row"><input id="coupon" placeholder="কুপন কোড লিখুন" autocomplete="off"><button type="button" onclick="applyCoupon()">Apply</button></div><small id="couponMsg"></small></div>
+      <div class="order-totals"><div class="line"><span>খাবারের দাম</span><b id="subPrice">₹0</b></div><div class="line"><span>ডেলিভারি চার্জ</span><b id="deliveryFee">₹0</b></div><div class="line"><span>ছাড়</span><b id="discountPrice">-₹0</b></div><div class="line total"><span>মোট টাকা</span><b id="totalPrice">₹0</b></div></div>
+    </div>
+    <div class="box checkout-section"><div class="section-title">💳 পেমেন্ট</div><div class="choice-grid"><label class="choice-card"><input type="radio" name="payment" value="COD" checked onchange="syncPaymentUI()"><b>💵 Cash on Delivery</b><small>ডেলিভারির সময় Cash দিন</small></label><label class="choice-card"><input type="radio" name="payment" value="ONLINE" onchange="syncPaymentUI()"><b>💳 Online Payment</b><small>নিরাপদ online payment</small></label></div><div id="onlineMethods" class="online-methods hidden"><label style="flex:1"><input type="radio" name="onlineMethod" value="UPI" checked> UPI</label><label style="flex:1"><input type="radio" name="onlineMethod" value="CARD"> Card</label><label style="flex:1"><input type="radio" name="onlineMethod" value="NETBANKING"> Net Banking</label></div></div>
+    <div class="checkout-bottom"><div class="place-row"><div class="place-total"><small>Payable amount</small><b id="stickyTotal">₹0</b></div><button class="place-btn" onclick="placeOrder()">অর্ডার করুন →</button></div></div>
+    <div id="addressPage" class="address-page">
+      <button class="checkout-back" type="button" onclick="closeAddressEditor()"><span class="back-icon">🔙</span><span>ফিরে যান</span></button><h2>ডেলিভারি ঠিকানা</h2><small style="font-size:9px;color:#8b7a62">আপনার নাম, মোবাইল ও ঠিকানা লিখুন</small>
+      <div class="box"><div class="grid2"><div><label>নাম</label><input id="cn" placeholder="আপনার নাম" autocomplete="name"></div><div><label>মোবাইল</label><input id="cp" inputmode="tel" maxlength="15" placeholder="মোবাইল নম্বর" autocomplete="tel"></div><div><label>পাড়া / বাড়ি</label><input id="para" placeholder="পাড়া / বাড়ি"></div><div><label>গ্রাম / শহর</label><input id="gram" placeholder="গ্রাম / শহর"></div><div><label>পোস্ট</label><input id="post" placeholder="পোস্ট"></div><div><label>থানা</label><input id="thana" placeholder="থানা"></div><div><label>জেলা</label><input id="jela" placeholder="জেলা"></div><div><label>পিন</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="পিন"></div></div><textarea id="ca" style="display:none"></textarea></div>
+      <button type="button" class="address-save" onclick="saveAddressEditor()">ঠিকানা সংরক্ষণ করুন</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.referral-share-card{padding:11px;border:1px solid #e3d5b9;border-radius:12px;background:#fffaf1}.referral-share-card span,.referral-wallet-card span,.referral-count-grid span{display:block;font-size:8px;color:#7d705f}.referral-share-card b{display:block;font-size:20px;letter-spacing:1px;color:#8b5f0c;margin:4px 0}.referral-share-card small{display:block;font-size:8px;color:#766b5d;word-break:break-all;margin-bottom:8px}.referral-wallet-card{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.referral-wallet-card>div{padding:9px;border-radius:10px;background:#f5ead6}.referral-wallet-card b{display:block;font-size:13px;margin-top:4px}.referral-count-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.referral-count-grid>div{padding:8px;border:1px solid #e3d5b9;border-radius:9px;text-align:center}.referral-count-grid b{display:block;font-size:16px;margin-top:3px}@media(max-width:520px){.referral-count-grid{grid-template-columns:repeat(2,1fr)}}.profile-panel{margin-top:10px}.profile-panel h3{margin:0 0 10px;font-size:15px}.profile-form{display:grid;gap:9px}.profile-form label{font-size:9px;font-weight:900;color:#756650}.profile-form input{width:100%;box-sizing:border-box}.profile-primary{width:100%;height:44px;border:0;border-radius:11px;background:#b98117;color:#fff;font-weight:1000}.profile-secondary{width:100%;height:42px;border:1px solid #decda9;border-radius:11px;background:#fff;color:#704d13;font-weight:900}.profile-danger{width:100%;height:42px;border:1px solid #efc8c1;border-radius:11px;background:#fff4f1;color:#9d382a;font-weight:900}.profile-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.profile-address{padding:10px;border:1px solid var(--line);border-radius:11px;margin-top:8px;background:#fff}.profile-address small{display:block;color:#756b5d;font-size:9px;line-height:1.5;margin-top:4px}.profile-chip{display:inline-block;padding:4px 7px;border-radius:999px;background:#f4e6c9;color:#79520f;font-size:8px;font-weight:900}.profile-note{font-size:9px;color:#817563;line-height:1.5}.profile-auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}.profile-auth-tabs button{height:38px;border:1px solid var(--line);border-radius:10px;background:#fff;font-weight:900;color:#72521c}.profile-auth-tabs button.active{background:#b98117;color:#fff;border-color:#b98117}
+</style>
+<script>
+  const S='sarkarSiteSettingsV8',P='sarkarProductsV8',C='sarkarCartV8',O='sarkarOrdersV8',SIG='sarkarNewOrderSignalV8',CT='sarkarCustomerTokenV2',CU='sarkarCustomerV2',CA='sarkarCustomerAddressesV2';
+const DEVICE_KEY='sarkarDeviceFingerprintV1',REF_KEY='sarkarReferralCodeV1';
+function getDeviceId(){let v=localStorage.getItem(DEVICE_KEY);if(!v){v=(crypto.randomUUID?crypto.randomUUID():'dev-'+Date.now()+'-'+Math.random().toString(36).slice(2));localStorage.setItem(DEVICE_KEY,v)}return v}
+function referralFromUrl(){try{return new URLSearchParams(location.search).get('ref')?.trim().toUpperCase()||''}catch{return ''}}
+if(referralFromUrl())localStorage.setItem(REF_KEY,referralFromUrl());
+const DEF={brandBn:'সরকার রেস্টুরেন্ট & বিরিয়ানি',brandEn:'SARKAR RESTAURANT & BIRYANI',address:'গোসাইপুর, হরিরামপুর রোড, মুর্শিদাবাদ, ওয়েস্ট বেঙ্গল, 742302',addressEn:'RESTAURANT ADDRESS',logo:'',open:true,ticker:['আজকের বিশেষ: গরুর মাংসের বিরিয়ানি তাজা রান্না হচ্ছে।'],heroTitle:'গরুর মাংসের বিরিয়ানি',heroSub:'প্রিমিয়াম স্বাদ · আজই অর্ডার করুন',heroButton:'আজই অর্ডার করুন',heroImage:'',heroVideo:'',popularTitle:'গরুর মাংসের বিরিয়ানি',popularSub:'',menuTitle:'মেনু',menuSub:'MENU',cartTitle:'কার্ট',cartSub:'CART',ordersTitle:'অর্ডার',ordersSub:'ORDERS',profileTitle:'প্রোফাইল',profileSub:'PROFILE',profileContent:'আপনার প্রোফাইলের তথ্য এখানে থাকবে।',deliveryFee:40};
+const DEFP=[{id:'p1',name:'প্রিমিয়াম গরুর মাংসের বিরিয়ানি',en:'PREMIUM BEEF BIRYANI',category:'বিরিয়ানি',price:180,desc:'নরম গরুর মাংস, সুগন্ধি চাল ও বিশেষ মসলা।',image:'',video:'',published:true}];
+function get(k,d){try{let x=JSON.parse(localStorage.getItem(k));return x==null?d:x}catch(e){return d}}function set(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function settings(){return {...DEF,...get(S,{})}}function products(){let p=get(P,DEFP);return Array.isArray(p)?p.filter(x=>x.published!==false):DEFP}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function yt(u){let m=String(u||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([^?&/]+)/i);return m?m[1]:''}
+function direct(u){return /\.(mp4|webm|ogg)(\?.*)?$/i.test(u||'')}
+function media(x){
+  if(x.video){
+    const y=yt(x.video);
+    if(y) return `<iframe class="food-video" src="https://www.youtube.com/embed/${y}?autoplay=1&mute=1&loop=1&playlist=${y}&controls=0&playsinline=1&rel=0&start=0&end=20" allow="autoplay;encrypted-media" loading="lazy"></iframe>`;
+    return `<video class="food-video" src="${esc(x.video)}" autoplay muted loop playsinline preload="metadata" data-preview-seconds="20" onloadedmetadata="this.currentTime=0;this.play().catch(()=>{});this._stop20=setTimeout(()=>{this.currentTime=0;this.play().catch(()=>{});},20000)"></video>`;
+  }
+  if(x.image) return `<img src="${esc(x.image)}" alt="${esc(x.name)}" loading="lazy" style="width:100%;height:100%;object-fit:cover">`;
+  return `<div class="logo logo-fallback"></div>`;
+}
+function card(x,i){return `<article class="food"><div class="media">${media(x)}<span class="tag">${esc(x.category||'MENU')}</span></div><div class="food-body"><div class="food-name">${esc(x.name)}</div><div class="food-en">${esc(x.en)}</div><div class="food-desc">${esc(x.desc)}</div><div class="food-bottom"><div class="price">₹${Number(x.price||0).toLocaleString('en-IN')}</div><button class="order" onclick="add(${i})">অর্ডার করুন</button></div></div></article>`}
+function render(){let s=settings(),p=products();brandBn.textContent=s.brandBn;brandEn.textContent=s.brandEn;address.innerHTML=esc(s.address)+' <span class="address-en">· '+esc(s.addressEn)+'</span>';let ol=document.getElementById('openMini');ol.className='open-mini '+(s.open?'':'closed');ol.innerHTML='<span>●</span> '+(s.open?'OPEN':'CLOSED');if(s.logo){logoSlot.outerHTML=`<img id="logoSlot" class="logo" src="${esc(s.logo)}" onerror="this.outerHTML='<div id=&quot;logoSlot&quot; class=&quot;logo logo-fallback&quot;>🍛</div>'">`};ticker.innerHTML=(s.ticker||[]).filter(Boolean).map(t=>`<span>◆ ${esc(t)}</span>`).join('')||'<span>◆ স্বাগতম</span>';popularTitle.textContent=s.popularTitle;popularSub.textContent=s.popularSub;menuTitle.textContent=s.menuTitle;menuSub.textContent=s.menuSub;cartTitle.textContent=s.cartTitle;cartSub.textContent=s.cartSub;ordersTitle.textContent=s.ordersTitle;ordersSub.textContent=s.ordersSub;profileTitle.textContent=s.profileTitle;profileSub.textContent=s.profileSub;profileContent.innerHTML=`<div class="box">${esc(s.profileContent)}</div>`;hero.innerHTML=heroMedia(s)+`<div class="hero-copy"><h1>${esc(s.heroTitle)}</h1><p>${esc(s.heroSub)}</p><button onclick="go('menu')">${esc(s.heroButton)}</button></div>`;popularCards.innerHTML=p.map(card).join('')||'<div class="empty">কোনো প্রকাশিত খাবার নেই।</div>';menuCards.innerHTML=p.map((x,i)=>`<div class="menu-card">${card(x,i)}</div>`).join('')||'<div class="empty">কোনো প্রকাশিত খাবার নেই।</div>';renderCart();renderOrders()}
+function heroMedia(s){if(direct(s.heroVideo))return `<video src="${esc(s.heroVideo)}" muted autoplay loop playsinline preload="auto"></video>`;let y=yt(s.heroVideo);if(y)return `<iframe src="https://www.youtube.com/embed/${y}?autoplay=1&mute=1&loop=1&playlist=${y}&controls=0&playsinline=1&rel=0" allow="autoplay;encrypted-media"></iframe>`;if(s.heroImage)return `<img src="${esc(s.heroImage)}">`;return '<div class="fallback">🍛</div>'}
+let cart=get(C,[]),orders=get(O,[]);
+function add(i){let x=cart.find(x=>x.i===i);x?x.q++:cart.push({i,q:1});set(C,cart);renderCart();go('cart')}
+function change(i,d){let x=cart.find(x=>x.i===i);if(!x)return;x.q+=d;if(x.q<1)cart=cart.filter(y=>y!==x);set(C,cart);renderCart()}
+function renderCart(){
+  let p=products(),discount=Number(window.currentDiscount||0);
+  if(!cart.length){cartList.innerHTML='<div class="empty">🛍<br><br>কার্ট খালি</div>';cartSummary.innerHTML='';return;}
+  let sub=cart.reduce((a,x)=>a+(Number(p[x.i]?.price||0)*x.q),0),fee=Number(settings().deliveryFee||0),total=Math.max(0,sub+fee-discount);
+  cartList.innerHTML=cart.map(x=>{let a=p[x.i];return `<div class="box row"><div class="grow"><b>${esc(a.name)}</b><div class="price">₹${Number(a.price||0)*x.q}</div></div><button onclick="change(${x.i},-1)">−</button><b style="padding:0 10px">${x.q}</b><button onclick="change(${x.i},1)">+</button></div>`}).join('');
+  cartSummary.innerHTML=`<div class="box summary" style="margin-top:12px"><div class="line"><span>খাবারের দাম</span><b>₹${sub}</b></div><div class="line"><span>ডেলিভারি চার্জ</span><b>₹${fee}</b></div><div class="line"><span>ছাড়</span><b>-₹${discount}</b></div><div class="line total"><span>মোট টাকা</span><b>₹${total}</b></div><button type="button" onclick="openCheckout()" style="width:100%;height:46px;margin-top:12px;border:0;border-radius:12px;background:#b98117;color:#fff;font-weight:1000;font-size:14px">চেকআউট করুন →</button></div>`;
+  const cpEl=document.getElementById('checkoutProduct');if(cpEl)cpEl.innerHTML=cart.map(x=>{let a=p[x.i];return `<div class="checkout-item">${a.image?`<img src="${esc(a.image)}" alt="${esc(a.name)}">`:'<div class="item-image">🍛</div>'}<div class="item-info"><div class="item-name">${esc(a.name)}</div><div class="item-price">₹${Number(a.price||0)} × ${x.q} = ₹${Number(a.price||0)*x.q}</div><div class="qty-controls"><button type="button" onclick="change(${x.i},-1)">−</button><b>${x.q}</b><button type="button" onclick="change(${x.i},1)">+</button></div></div></div>`}).join('');
+  document.getElementById('subPrice').textContent='₹'+sub;document.getElementById('deliveryFee').textContent='₹'+fee;document.getElementById('discountPrice').textContent='-₹'+discount;document.getElementById('totalPrice').textContent='₹'+total;document.getElementById('stickyTotal').textContent='₹'+total;updateCheckoutAddressPreview();
+}
+function updateCheckoutAddressPreview(){const c=get(CU,{}),list=get(CA,[]),a=list.find(x=>x.isDefault)||list[0];const n=document.getElementById('checkoutRecipientName'),ph=document.getElementById('checkoutRecipientPhone'),ad=document.getElementById('checkoutAddressPreview');if(n)n.textContent=a?.recipientName||c?.name||'নাম';if(ph)ph.textContent=a?.phone||c?.phone||'';if(ad)ad.textContent=a?.address||composeCheckoutAddress()||'ঠিকানা যোগ করুন';}
+window.currentDiscount = Number(window.currentDiscount||0);
+async function applyCoupon(){
+  const c=document.getElementById('coupon').value.trim().toUpperCase();
+  if(!c){window.currentDiscount=0;document.getElementById('couponMsg').textContent='';renderCart();return;}
+  const p=products(),sub=cart.reduce((a,x)=>a+(Number(p[x.i]?.price||0)*x.q),0),fee=Number(settings().deliveryFee||0);
+  try{const r=await fetch('/api/coupons/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:c,subtotal:sub,deliveryFee:fee})});const d=await r.json();if(!r.ok)throw Error(d.error||'কুপন গ্রহণ করা যায়নি');window.currentDiscount=Number(d.discount||0);document.getElementById('couponMsg').textContent=`✅ ₹${window.currentDiscount} ছাড় প্রয়োগ হয়েছে।`;renderCart();}catch(e){window.currentDiscount=0;document.getElementById('couponMsg').textContent='❌ '+e.message;renderCart();}
+}
+function openCheckout(){if(!cart.length){go('cart');return;}renderCart();checkout.classList.add('show');closeAddressEditor();syncPaymentUI();const ph=localStorage.getItem('sarkarCustomerPhoneV1')||'';if(ph&&!cp.value)cp.value=ph;updateCheckoutAddressPreview();}
+function openAddressEditor(){addressEditorReturn='checkout';const list=get(CA,[]),a=list.find(x=>x.isDefault)||list[0],c=get(CU,{});activeAddressId=a?.id||null;cn.value=a?.recipientName||c?.name||'';cp.value=a?.phone||c?.phone||localStorage.getItem('sarkarCustomerPhoneV1')||'';const parts=String(a?.address||'').split(',').map(x=>x.trim());para.value=parts[0]||'';gram.value=parts[1]||'';post.value=parts[2]||'';thana.value=parts[3]||'';jela.value=parts[4]||'';pin.value=parts[5]||'';ca.value=a?.address||'';document.getElementById('addressPage')?.classList.add('show');}
+function closeAddressEditor(){document.getElementById('addressPage')?.classList.remove('show');}
+let addressEditorReturn='checkout';
+function openAddressEditorFromProfile(){addressEditorReturn='profile';if(!document.getElementById('checkout').classList.contains('show'))document.getElementById('checkout').classList.add('show');openAddressEditor();}
+async function saveAddressEditor(){const address=[para.value,gram.value,post.value,thana.value,jela.value,pin.value].map(x=>String(x||'').trim()).filter(Boolean).join(', ');if(!cn.value.trim()||!cp.value.trim()||!address)return alert('নাম, মোবাইল ও ঠিকানা পূরণ করুন');ca.value=address;const token=localStorage.getItem(CT)||'';const payload={label:'Home',recipientName:cn.value.trim(),phone:cp.value.trim(),address,latitude:customerLocation?.latitude??null,longitude:customerLocation?.longitude??null,isDefault:true};try{if(token){const url=activeAddressId?'/api/customer/addresses/'+encodeURIComponent(activeAddressId):'/api/customer/addresses';const r=await fetch(url,{method:activeAddressId?'PUT':'POST',headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok)throw Error(d.error||'ঠিকানা সংরক্ষণ করা যায়নি');const list=activeAddressId?get(CA,[]).map(x=>x.id===d.id?d:x):[d,...get(CA,[])];set(CA,list);}else{set(CU,{...get(CU,{}),name:cn.value.trim(),phone:cp.value.trim()});set(CA,[{...payload,id:'local-default'}]);}updateCheckoutAddressPreview();closeAddressEditor();if(addressEditorReturn==='profile'){document.getElementById('checkout').classList.remove('show');renderAccountSettings();}addressEditorReturn='checkout';}catch(e){alert(e.message)}}
+function closeCheckout(){closeAddressEditor();checkout.classList.remove('show')}
+async function productionLoad(){
+  if(!location.protocol.startsWith('http')) return;
+  try{
+    const token=localStorage.getItem(CT)||''; const phone=localStorage.getItem('sarkarCustomerPhoneV1')||'';
+    const reqs=[fetch('/api/settings'),fetch('/api/products')];
+    if(token){reqs.push(fetch('/api/customer/me',{headers:{Authorization:'Bearer '+token}}));reqs.push(fetch('/api/customer/addresses',{headers:{Authorization:'Bearer '+token}}));}
+    else if(phone) reqs.push(fetch('/api/orders?phone='+encodeURIComponent(phone)));
+    const rs=await Promise.all(reqs);
+    if(rs[0].ok){const x=await rs[0].json();localStorage.setItem(S,JSON.stringify({...DEF,...x}));}
+    if(rs[1].ok){const x=await rs[1].json();localStorage.setItem(P,JSON.stringify(x));}
+    const cb=document.getElementById('couponBox'); if(cb) cb.style.display=(settings().couponShowOnCheckout===false?'none':'');
+    if(token){if(rs[2]?.ok){const x=await rs[2].json();localStorage.setItem(CU,JSON.stringify(x));updateProfileUI(x);}if(rs[3]?.ok){const x=await rs[3].json();localStorage.setItem(CA,JSON.stringify(x));applySavedAddress(x);}}
+    else if(phone && rs[2]?.ok){const x=await rs[2].json();orders=x;set(O,orders);}
+    render();
+  }catch(e){console.warn('Production API unavailable; local preview retained.',e)}
+}
+function authHeaders(){const t=localStorage.getItem(CT)||'';return t?{Authorization:'Bearer '+t}:{};}
+function updateProfileUI(c){if(!c)return;document.getElementById('profileName').textContent=c.name||'Customer';document.getElementById('profilePhone').textContent=c.phone||'';document.getElementById('profileAuthBtn').textContent='Account';}
+function applySavedAddress(list){const a=Array.isArray(list)?(list.find(x=>x.isDefault)||list[0]):null;if(!a)return;const parts=String(a.address||'').split(',').map(x=>x.trim());para.value=parts[0]||'';gram.value=parts[1]||'';post.value=parts[2]||'';thana.value=parts[3]||'';jela.value=parts[4]||'';pin.value=parts[5]||'';cn.value=a.recipientName||'';cp.value=a.phone||'';ca.value=a.address||'';if(a.latitude!=null&&a.longitude!=null)customerLocation={latitude:Number(a.latitude),longitude:Number(a.longitude)};updateCheckoutAddressPreview();}
+async function productionRefreshOrders(){
+  if(!location.protocol.startsWith('http')) return;
+  try{const token=localStorage.getItem(CT)||'';const url=token?'/api/orders':'/api/orders?phone='+encodeURIComponent(localStorage.getItem('sarkarCustomerPhoneV1')||'');if(!token&&!localStorage.getItem('sarkarCustomerPhoneV1'))return;const r=await fetch(url,{headers:token?authHeaders():{}});if(r.ok){orders=await r.json();set(O,orders);renderOrders();}}catch(e){}
+}
+async function startRazorpay(data,n,ph){if(!window.Razorpay){await new Promise((resolve,reject)=>{const sc=document.createElement('script');sc.src='https://checkout.razorpay.com/v1/checkout.js';sc.onload=resolve;sc.onerror=reject;document.head.appendChild(sc);});}return new Promise((resolve,reject)=>{const rz=new Razorpay({key:data.keyId,amount:data.amount,currency:data.currency,order_id:data.razorpayOrderId,name:siteNameForPay(),description:'SARKAR Restaurant Order '+data.orderId,prefill:{name:n,contact:ph},handler:async response=>{try{const r=await fetch('/api/payments/razorpay/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:data.orderId,accessToken:localStorage.getItem('sarkarOrderToken_'+data.orderId),...response})});const d=await r.json();if(!r.ok)throw Error(d.error||'Payment verification failed');resolve(d);}catch(e){reject(e)}},modal:{ondismiss:()=>reject(new Error('Payment window closed'))}});rz.open();});}
+function siteNameForPay(){return (settings().brandEn||settings().brandBn||'SARKAR RESTAURANT & BIRYANI').slice(0,80)}
+function composeCheckoutAddress(){
+  const parts=[para.value,gram.value,post.value,thana.value,jela.value,pin.value].map(x=>String(x||'').trim()).filter(Boolean);
+  const gps=customerLocation?`Current Location: ${customerLocation.latitude}, ${customerLocation.longitude}`:'';
+  return parts.join(', ')+(gps?(parts.length?' · ':'')+gps:'');
+}
+function syncPaymentUI(){
+  const v=document.querySelector('input[name="payment"]:checked')?.value||'COD';
+  document.getElementById('onlineMethods')?.classList.toggle('hidden',v!=='ONLINE');
+  const pm=document.getElementById('pm'); if(pm) pm.value=v;
+}
+async function productionPlaceOrder(){
+  const n=cn.value.trim(),ph=cp.value.trim(),ad=composeCheckoutAddress().replace(/ · Current Location:.*$/,'').trim(),paymentMethod=(document.querySelector('input[name="payment"]:checked')?.value||'COD'),onlineMethod=(document.querySelector('input[name="onlineMethod"]:checked')?.value||'UPI');
+  ca.value=ad;
+  if(!n||!ph||!ad)return alert('সব তথ্য পূরণ করুন');
+  const p=products(),items=cart.map(x=>({productId:p[x.i]?.id,qty:x.q})).filter(x=>x.productId); if(!items.length)return alert('কার্টের খাবারগুলো আর পাওয়া যাচ্ছে না। Menu আবার খুলুন।');
+  const verificationToken='';
+  const customerToken=localStorage.getItem(CT)||'';
+  try{const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json',...(customerToken?{Authorization:'Bearer '+customerToken}:{})},body:JSON.stringify({name:n,phone:ph,address:ad,items,paymentMethod,verificationToken,location:customerLocation,onlineMethod,couponCode:(document.getElementById('coupon')?.value||'').trim().toUpperCase()})});const data=await r.json();if(!r.ok)throw Error(data.error||'Order failed');
+    localStorage.setItem('sarkarCustomerPhoneV1',ph);orders.unshift(data);set(O,orders);if(data.accessToken)localStorage.setItem('sarkarOrderToken_'+data.id,data.accessToken);
+    if(paymentMethod==='ONLINE'){const pr=await fetch('/api/payments/razorpay/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:data.id,accessToken:data.accessToken})});const pd=await pr.json();if(!pr.ok)throw Error(pd.error||'Online payment unavailable');await startRazorpay(pd,n,ph);data.paymentStatus='PAID';}
+    cart=[];set(C,[]);checkout.classList.remove('show');render();go('orders');alert(paymentMethod==='ONLINE'?'অর্ডার ও payment সফল হয়েছে।':'অর্ডার গ্রহণ হয়েছে। Order ID: '+data.id);
+  }catch(e){alert(e.message)}
+}
+
+  let customerLocation = null;
+let activeAddressId = null;
+
+async function getCurrentLocation(){if(!navigator.geolocation){alert('এই ফোনে GPS নেই');return;}navigator.geolocation.getCurrentPosition(async pos=>{customerLocation={latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude)};const loc=`Current Location: ${customerLocation.latitude.toFixed(6)}, ${customerLocation.longitude.toFixed(6)}`;ca.value=loc;try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&addressdetails=1&lat=${customerLocation.latitude}&lon=${customerLocation.longitude}`);const d=await r.json(),a=d.address||{};para.value=a.neighbourhood||a.suburb||a.hamlet||'';gram.value=a.village||a.town||a.city||'';post.value=a.postcode||'';thana.value=a.state_district||a.county||'';jela.value=a.state||a.state_district||'';pin.value=a.postcode||'';updateCheckoutAddressPreview();}catch(e){updateCheckoutAddressPreview();}},()=>{alert('লোকেশন অনুমতি দিন');},{enableHighAccuracy:true,timeout:20000,maximumAge:0});}
+
+function placeOrder(){if(location.protocol.startsWith('http')) return productionPlaceOrder(); let n=cn.value.trim(),ph=cp.value.trim(),ad=ca.value.trim();if(!n||!ph||!ad)return alert('সব তথ্য পূরণ করুন');let p=products(),sub=cart.reduce((a,x)=>a+(p[x.i]?.price||0)*x.q,0),fee=settings().deliveryFee||0,o={id:'SK'+Date.now().toString().slice(-8),name:n,phone:ph,address:ad,total:sub+fee,items:cart.map(x=>({name:p[x.i]?.name,qty:x.q,price:p[x.i]?.price})),status:'Placed',createdAt:new Date().toISOString(),completedAt:null};orders.unshift(o);set(O,orders);set(SIG,{id:o.id,time:Date.now()});cart=[];set(C,[]);checkout.classList.remove('show');render();go('orders');alert('অর্ডার গ্রহণ হয়েছে।')}
+async function refreshTracking(id,token,el){
+  try{
+    const r=await fetch('/api/orders/'+encodeURIComponent(id)+'/tracking?accessToken='+encodeURIComponent(token));
+    const d=await r.json();
+
+    if(!r.ok) throw Error(d.error);
+
+    if(d.delivered){
+      el.innerHTML='✅ ডেলিভারি সম্পন্ন';
+      return;
+    }
+
+    if(d.location){
+      el.innerHTML=
+      `📍 Live Tracking<br>
+       🛵 ${d.distanceKm ?? '--'} km · ⏱️ ${d.etaMin ?? '--'} মিনিট<br>
+       <a href="https://www.google.com/maps/search/?api=1&query=${d.location.latitude},${d.location.longitude}" target="_blank">🗺️ Live Map</a>`;
+    }else{
+      el.innerHTML='🛵 Rider রওনা হয়েছে। Live Location শীঘ্রই দেখা যাবে।';
+    }
+
+  }catch(e){
+    el.innerHTML='🛵 পার্সেল হাতে পাওয়ার জন্য Live Location দেখুন';
+  }
+  }
+  const STATUS_STEPS=[['NEW','অর্ডার এসেছে'],['ACCEPTED','অর্ডার গ্রহণ'],['PREPARING','রান্না/প্রস্তুতি'],['READY','অর্ডার প্রস্তুত'],['OUT_FOR_DELIVERY','ডেলিভারির পথে'],['DELIVERED','ডেলিভারি সম্পন্ন']];
+function statusText(st){return ({NEW:'অর্ডার এসেছে',ACCEPTED:'অর্ডার গ্রহণ করা হয়েছে',PREPARING:'প্রস্তুত করা হচ্ছে',READY:'অর্ডার প্রস্তুত',OUT_FOR_DELIVERY:'ডেলিভারির পথে',DELIVERED:'ডেলিভারি সম্পন্ন',CANCELLED:'অর্ডার বাতিল',Placed:'অর্ডার এসেছে',Accepted:'অর্ডার গ্রহণ করা হয়েছে',Cancelled:'অর্ডার বাতিল',Delivered:'ডেলিভারি সম্পন্ন'})[st]||st}
+function statusTimeline(st){
+  if(st==='CANCELLED'||st==='Cancelled')return '<div style="padding:10px;border-radius:10px;background:#fff0ee;color:#9a3427;font-weight:900">❌ অর্ডার বাতিল</div>';
+  const idx=STATUS_STEPS.findIndex(x=>x[0]===st);
+  const active=Math.max(0,idx);
+  return '<div class="simple-status-timeline">'+STATUS_STEPS.map((x,i)=>`<div class="simple-status-step ${i<=active?'status-green':''}"><span class="simple-status-signal">${i<=active?'🟢':'○'}</span><b>${x[1]}</b></div>`).join('')+'</div>';
+}
+function formatDate(v){try{return new Date(v).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}catch{return v||''}}
+async function openOrderDetails(id){
+  const box=document.getElementById('orderDetailsBody'); document.getElementById('orderDetails').classList.add('show'); box.innerHTML='<div class="empty">অর্ডারের তথ্য লোড হচ্ছে…</div>';
+  try{
+    const token=localStorage.getItem(CT); let o=orders.find(x=>String(x.id)===String(id));
+    if(token){const r=await fetch('/api/customer/orders/'+encodeURIComponent(id),{headers:authHeaders()});if(r.ok)o=await r.json();}
+    if(!o)throw Error('Order not found');
+    const items=Array.isArray(o.items)?o.items:[];
+    box.innerHTML=`<h2 style="margin:2px 0 4px">অর্ডার #${esc(o.id)}</h2><small style="font-size:8px;color:#8b7a62">${esc(formatDate(o.createdAt))}</small><div class="box" style="margin:12px 0"><div class="row"><b>${esc(statusText(o.status))}</b><span class="status-pill">${esc(o.status)}</span></div>${statusTimeline(o.status)}</div><div class="box" style="margin:0 0 12px"><b>📍 ডেলিভারি ঠিকানা</b><p style="font-size:10px;line-height:1.5;color:#665b4e;margin-bottom:0">${esc(o.name)} · ${esc(o.phone)}<br>${esc(o.address)}</p></div><div class="box" style="margin:0 0 12px"><b>🛍️ অর্ডারের আইটেম</b>${items.map(it=>{const prod=products().find(x=>String(x.name||'')===String(it.name||''))||{};const img=it.image||prod.image||'';return `<div class="detail-item-row"><div class="detail-item-photo-wrap">${img?`<img class="order-detail-item-photo" src="${esc(img)}" alt="">`:'🍛'}</div><div class="detail-item-name"><span>${esc(it.name)} × ${it.qty}</span><b>₹${Number(it.price||0)*Number(it.qty||1)}</b></div></div>`}).join('')}<div class="line"><span>খাবারের দাম</span><b>₹${o.subtotal||0}</b></div><div class="line"><span>ডেলিভারি চার্জ</span><b>₹${o.delivery_fee||0}</b></div><div class="line"><span>ছাড়</span><b>-₹${o.discount_amount||0}</b></div><div class="line total"><span>মোট টাকা</span><b>₹${o.total||0}</b></div></div><div id="orderRating_${esc(o.id)}">${renderOrderRating(o.id)}</div><div id="detailTracking" class="box" style="margin:0">📍 Tracking লোড হচ্ছে…</div>`;
+    loadOrderRating(id);
+    refreshCustomerTracking(id,box.querySelector('#detailTracking')); if(o.status!=='DELIVERED'&&o.status!=='CANCELLED')setTimeout(()=>refreshCustomerTracking(id,box.querySelector('#detailTracking')),100);
+  }catch(e){box.innerHTML='<div class="empty">অর্ডারের তথ্য পাওয়া যায়নি।</div>'}
+}
+
+function renderOrderRating(orderId, data={} ){
+  const saved=Number(data.rating||0), count5=Number(data.fiveStarCount||0), avg=Number(data.averageRating||0), total=Number(data.totalRatings||0);
+  return `<div class="order-rating-box">
+    <div class="order-rating-title">এই বিরিয়ানি কেমন?</div>
+    <div class="order-rating-stars">
+      ${[['1','⭐','খুব খারাপ'],['2','⭐','খারাপ'],['3','⭐','মোটামুটি'],['4','⭐','ভালো'],['5','⭐','খুব ভালো']].map(x=>`<button type="button" class="order-rating-option ${saved===Number(x[0])?'selected':''}" onclick="selectOrderRating('${esc(orderId)}',${x[0]})"><span class="star">${x[1]}</span><span>${x[2]}</span></button>`).join('')}
+    </div>
+    <div id="reviewEditor_${esc(orderId)}" class="order-review-editor ${saved?'show':''}">
+      <textarea id="reviewText_${esc(orderId)}" maxlength="500" placeholder="রিভিউ লিখুন...">${esc(data.review||'')}</textarea>
+      <button type="button" class="order-review-submit" onclick="submitOrderRating('${esc(orderId)}')">Submit</button>
+    </div>
+    <div class="order-rating-count">⭐ 5 Star Rating: <b>${count5}</b> · মোট Rating: <b>${total}</b>${avg?` · Average: <b>${avg.toFixed(1)}</b>`:''}</div>
+    ${data.saved?'<div class="order-rating-success">✓ আপনার rating ও review সংরক্ষণ হয়েছে</div>':''}
+  </div>`;
+}
+async function loadOrderRating(orderId){
+  const el=document.getElementById('orderRating_'+String(orderId)); if(!el)return;
+  try{
+    const token=localStorage.getItem(CT)||'';
+    const accessToken=localStorage.getItem('sarkarOrderToken_'+String(orderId))||'';
+    const qs=accessToken?('?accessToken='+encodeURIComponent(accessToken)):'';
+    const r=await fetch('/api/customer/orders/'+encodeURIComponent(orderId)+'/rating'+qs,{headers:token?authHeaders():{}});
+    const d=await r.json();
+    if(!r.ok)throw Error(d.error||'Rating unavailable');
+    el.innerHTML=renderOrderRating(orderId,d);
+  }catch(e){el.innerHTML=renderOrderRating(orderId,{});}
+}
+function selectOrderRating(orderId,rating){
+  try{ if(navigator.vibrate) navigator.vibrate(28); }catch(e){}
+  const ed=document.getElementById('reviewEditor_'+String(orderId));
+  if(ed)ed.classList.add('show');
+  const buttons=document.querySelectorAll('#orderRating_'+String(orderId)+' .order-rating-option');
+  buttons.forEach(b=>b.classList.remove('selected'));
+  const target=[...buttons].find(b=>b.getAttribute('onclick')?.includes(','+rating+')'));
+  if(target)target.classList.add('selected');
+  const box=document.getElementById('orderRating_'+String(orderId));
+  if(box)box.dataset.rating=String(rating);
+}
+async function submitOrderRating(orderId){
+  const box=document.getElementById('orderRating_'+String(orderId));
+  const rating=Number(box?.dataset.rating||box?.querySelector('.order-rating-option.selected')?.getAttribute('onclick')?.match(/,(\d+)\)/)?.[1]||0);
+  const review=document.getElementById('reviewText_'+String(orderId))?.value.trim()||'';
+  if(!rating)return alert('আগে একটি Star rating দিন।');
+  try{
+    const token=localStorage.getItem(CT)||'';
+    const accessToken=localStorage.getItem('sarkarOrderToken_'+String(orderId))||'';
+    const r=await fetch('/api/customer/orders/'+encodeURIComponent(orderId)+'/rating',{method:'POST',headers:{'Content-Type':'application/json',...(token?authHeaders():{})},body:JSON.stringify({rating,review,accessToken})});
+    const d=await r.json(); if(!r.ok)throw Error(d.error||'Rating submit করা যায়নি');
+    if(box)box.innerHTML=renderOrderRating(orderId,{...d,saved:true});
+  }catch(e){alert(e.message)}
+}
+function closeOrderDetails(){document.getElementById('orderDetails').classList.remove('show')}
+async function refreshCustomerTracking(id,el){if(!el)return;const token=localStorage.getItem(CT);if(!token){el.innerHTML='🔐 Live tracking দেখতে customer login করুন।';return}try{const r=await fetch('/api/customer/orders/'+encodeURIComponent(id)+'/tracking',{headers:authHeaders()});const d=await r.json();if(!r.ok)throw Error(d.error||'Tracking unavailable');if(d.delivered){el.innerHTML='✅ ডেলিভারি সম্পন্ন হয়েছে।';return}if(d.location){el.innerHTML=`<b>📍 Rider Live Location</b><br>🛵 ${d.distanceKm??'--'} km · ⏱️ ${d.etaMin??'--'} মিনিট<br><small>শেষ আপডেট: ${esc(formatDate(d.location.recordedAt))}</small><br><a href="https://www.google.com/maps/search/?api=1&query=${d.location.latitude},${d.location.longitude}" target="_blank">🗺️ Map খুলুন</a>`}else{el.innerHTML='🛵 Rider এখনও GPS location পাঠায়নি।'} }catch(e){el.innerHTML='📍 Live tracking এখন পাওয়া যাচ্ছে না।'} }
+function renderOrders(){
+  if(!orders.length){orderList.innerHTML='<div class="empty">এখনও কোনো অর্ডার নেই।</div>';return}
+  const ps=products();
+  orderList.innerHTML=orders.map(o=>{
+    const first=Array.isArray(o.items)&&o.items.length?o.items[0]:{};
+    const product=ps.find(p=>String(p.name||'')===String(first.name||''))||{};
+    const photo=first.image||product.image||'';
+    const photoHtml=photo
+      ? `<img src="${esc(photo)}" alt="" style="width:78px;height:78px;object-fit:cover;border-radius:12px;display:block;background:#f3ead7">`
+      : `<div style="width:78px;height:78px;border-radius:12px;background:#f3ead7;display:flex;align-items:center;justify-content:center;font-size:30px">🍛</div>`;
+    return `<button type="button" class="box order-card-btn" onclick="openOrderDetails('${esc(o.id)}')"><div style="display:flex;gap:12px;align-items:center"><div style="flex:0 0 78px">${photoHtml}</div><div style="min-width:0;flex:1"><div class="row"><b>অর্ডার #${esc(o.id)}</b><span class="status-pill">${esc(statusText(o.status))}</span></div><div style="font-size:11px;color:#776d61;margin-top:7px">₹${o.total||0} · ${esc(formatDate(o.createdAt))}</div><div style="font-size:9px;color:#8b7a62;margin-top:6px">Order Details দেখুন →</div></div></div></button>`;
+  }).join('');
+}
+
+function profileLoggedIn(){return !!localStorage.getItem(CT)}
+function profilePanel(html){const el=document.getElementById('profileContent');if(el)el.innerHTML=html;go('profile')}
+function openAccount(mode='auto'){
+  if(profileLoggedIn()){renderAccountSettings();return;}
+  renderAuthPanel(mode==='login'?'login':'signup');
+}
+function renderAuthPanel(mode='signup'){
+  profilePanel(`<div class="box profile-panel"><div class="profile-auth-tabs"><button class="${mode==='login'?'active':''}" onclick="renderAuthPanel('login')">Login</button><button class="${mode==='signup'?'active':''}" onclick="renderAuthPanel('signup')">Sign up</button></div><div id="authForm"></div></div>`);
+  const form=document.getElementById('authForm');
+  if(mode==='login') form.innerHTML=`<div class="profile-form"><label>মোবাইল নম্বর<input id="authPhone" inputmode="tel" autocomplete="tel" placeholder="মোবাইল নম্বর"></label><label>Password<input id="authPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button class="profile-primary" onclick="submitCustomerAuth('login')">Login করুন</button><div class="profile-note">আপনার account থাকলে মোবাইল ও password দিয়ে login করুন।</div></div>`;
+  else form.innerHTML=`<div class="profile-form"><label>নাম<input id="authName" autocomplete="name" placeholder="আপনার নাম"></label><label>মোবাইল নম্বর<input id="authPhone" inputmode="tel" autocomplete="tel" placeholder="মোবাইল নম্বর"></label><label>Email (ঐচ্ছিক)<input id="authEmail" type="email" autocomplete="email" placeholder="Email"></label><label>Password<input id="authPassword" type="password" autocomplete="new-password" placeholder="কমপক্ষে 6 অক্ষর"></label><label>Referral Code (ঐচ্ছিক)<input id="authReferralCode" value="${esc(localStorage.getItem(REF_KEY)||'')}" placeholder="SARKAR123456"></label><button class="profile-primary" onclick="submitCustomerAuth('signup')">Account তৈরি করুন</button><div class="profile-note">Referral code থাকলে account তৈরির সময় সেটি ব্যবহার করুন।</div></div>`;
+}
+async function submitCustomerAuth(mode){
+  const phone=document.getElementById('authPhone')?.value.trim()||'',password=document.getElementById('authPassword')?.value||'';
+  const name=document.getElementById('authName')?.value.trim()||'',email=document.getElementById('authEmail')?.value.trim()||'';
+  const referralCode=(document.getElementById('authReferralCode')?.value.trim()||localStorage.getItem(REF_KEY)||'').toUpperCase();
+  if(!phone||!password||(mode==='signup'&&!name))return alert('প্রয়োজনীয় তথ্য পূরণ করুন');
+  try{
+    const payload=mode==='signup'?{name,phone,email,password,referralCode,deviceId:getDeviceId()}:{phone,password,deviceId:getDeviceId()};
+    const r=await fetch(mode==='signup'?'/api/customer/auth/signup':'/api/customer/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await r.json();if(!r.ok)throw Error(d.error||'Login failed');
+    localStorage.setItem(CT,d.token);localStorage.setItem(CU,JSON.stringify(d.customer));localStorage.setItem('sarkarCustomerPhoneV1',d.customer.phone);
+    if(mode==='signup')localStorage.removeItem(REF_KEY);
+    updateProfileUI(d.customer);
+    const ar=await fetch('/api/customer/addresses',{headers:authHeaders()});if(ar.ok){const a=await ar.json();set(CA,a);applySavedAddress(a);}
+    renderAccountSettings();alert(mode==='signup'?'Account তৈরি হয়েছে।':'Login সফল হয়েছে।');
+  }catch(e){alert(e.message)}
+}
+async function renderAccountSettings(){
+  const c=get(CU,{});let addresses=get(CA,[]);
+  try{const [mr,ar]=await Promise.all([fetch('/api/customer/me',{headers:authHeaders()}),fetch('/api/customer/addresses',{headers:authHeaders()})]);if(mr.ok){const m=await mr.json();set(CU,m);updateProfileUI(m);}if(ar.ok){addresses=await ar.json();set(CA,addresses);}}catch{}
+  const a=addresses.find(x=>x.isDefault)||addresses[0];
+  profilePanel(`<div class="box profile-panel"><div class="profile-row"><div><h3>👤 Account Settings</h3><span class="profile-chip">Customer account</span></div><button class="profile-secondary" style="width:auto;padding:0 12px" onclick="logoutCustomer()">Logout</button></div><div class="profile-form" style="margin-top:12px"><label>নাম<input id="editProfileName" value="${esc(c.name||'')}"></label><label>মোবাইল নম্বর<input value="${esc(c.phone||'')}" disabled></label><label>Email<input id="editProfileEmail" type="email" value="${esc(c.email||'')}"></label><button class="profile-primary" onclick="saveCustomerProfile()">Profile Save করুন</button></div></div><div class="box profile-panel"><div class="profile-row"><h3>📍 Saved Addresses</h3><button class="profile-secondary" style="width:auto;padding:0 10px" onclick="openAddressEditorFromProfile()">+ Add</button></div><div id="profileAddresses">${renderProfileAddresses(addresses)}</div></div><div class="box profile-panel"><h3>🔐 Security</h3><div class="profile-form"><label>বর্তমান Password<input id="oldPassword" type="password"></label><label>নতুন Password<input id="newPassword" type="password"></label><button class="profile-secondary" onclick="changeCustomerPassword()">Password Change</button></div></div><div class="box profile-panel"><h3>ℹ️ Support</h3><p class="profile-note">অর্ডার, saved address, account এবং delivery tracking এখান থেকে পরিচালনা করা যাবে।</p></div>`);
+}
+function renderProfileAddresses(list){if(!list.length)return '<div class="profile-note">কোনো saved address নেই। + Add চাপুন।</div>';return list.map(a=>`<div class="profile-address"><div class="profile-row"><b>${esc(a.recipientName||'')}</b>${a.isDefault?'<span class="profile-chip">Default</span>':''}</div><small>${esc(a.phone||'')}<br>${esc(a.address||'')}</small><div style="display:flex;gap:7px;margin-top:8px"><button class="profile-secondary" style="height:34px" onclick="editSavedAddress('${esc(a.id)}')">Edit</button><button class="profile-danger" style="height:34px" onclick="deleteSavedAddress('${esc(a.id)}')">Delete</button></div></div>`).join('')}
+async function saveCustomerProfile(){const name=document.getElementById('editProfileName')?.value.trim(),email=document.getElementById('editProfileEmail')?.value.trim()||'';if(!name)return alert('নাম দিন');try{const r=await fetch('/api/customer/me',{method:'PUT',headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify({name,email})});const d=await r.json();if(!r.ok)throw Error(d.error||'Profile save failed');set(CU,d);updateProfileUI(d);renderAccountSettings();alert('Profile update হয়েছে।')}catch(e){alert(e.message)}}
+async function changeCustomerPassword(){const currentPassword=document.getElementById('oldPassword')?.value||'',newPassword=document.getElementById('newPassword')?.value||'';if(!currentPassword||newPassword.length<6)return alert('বর্তমান ও নতুন password দিন');try{const r=await fetch('/api/customer/password',{method:'PUT',headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify({currentPassword,newPassword})});const d=await r.json();if(!r.ok)throw Error(d.error||'Password change failed');document.getElementById('oldPassword').value='';document.getElementById('newPassword').value='';alert('Password পরিবর্তন হয়েছে।')}catch(e){alert(e.message)}}
+function editSavedAddress(id){addressEditorReturn='profile';if(!document.getElementById('checkout').classList.contains('show'))document.getElementById('checkout').classList.add('show');const a=get(CA,[]).find(x=>String(x.id)===String(id));if(!a)return;activeAddressId=a.id;cn.value=a.recipientName||'';cp.value=a.phone||'';const parts=String(a.address||'').split(',').map(x=>x.trim());para.value=parts[0]||'';gram.value=parts[1]||'';post.value=parts[2]||'';thana.value=parts[3]||'';jela.value=parts[4]||'';pin.value=parts[5]||'';ca.value=a.address||'';document.getElementById('addressPage')?.classList.add('show');}
+async function deleteSavedAddress(id){if(!confirm('এই address মুছে ফেলবেন?'))return;try{const r=await fetch('/api/customer/addresses/'+encodeURIComponent(id),{method:'DELETE',headers:authHeaders()});if(!r.ok)throw Error('Address delete করা যায়নি');const list=get(CA,[]).filter(x=>String(x.id)!==String(id));set(CA,list);renderAccountSettings();updateCheckoutAddressPreview();}catch(e){alert(e.message)}}
+function logoutCustomer(){localStorage.removeItem(CT);localStorage.removeItem(CU);localStorage.removeItem(CA);localStorage.removeItem('sarkarCustomerPhoneV1');updateProfileUI({name:'Guest',phone:''});document.getElementById('profileAuthBtn').textContent='Login / Sign up';profilePanel('<div class="box profile-panel"><h3>আপনি Logout করেছেন</h3><p class="profile-note">আবার account ব্যবহার করতে Login করুন।</p><button class="profile-primary" onclick="renderAuthPanel(\'login\')">Login করুন</button></div>');}
+
+async function openReferralCenter(){
+  if(!profileLoggedIn()){openAccount('login');return;}
+  try{
+    const r=await fetch('/api/customer/referral',{headers:authHeaders()});const d=await r.json();if(!r.ok)throw Error(d.error||'Referral data load failed');
+    profilePanel(`<div class="box profile-panel"><button class="profile-secondary" style="width:auto;padding:0 12px;margin-bottom:9px" onclick="renderAccountSettings()">🔙 ফিরে যান</button><h3>🗣️ Refer & Earn</h3><div class="referral-share-card"><span>আপনার Referral Code</span><b>${esc(d.referralCode)}</b><small>${esc(d.referralLink)}</small><button class="profile-primary" onclick="shareReferralLink(${JSON.stringify(d.referralLink)})">🔗 Referral Link Share করুন</button></div><div class="referral-wallet-card"><div><span>Promotional Balance</span><b>₹${Number(d.promotionalBalance||0)}</b></div><div><span>আপনার Referral Reward</span><b>₹${Number(d.rewardAmount||0)} / সফল referral</b></div></div><div class="referral-count-grid"><div><span>Join করেছে</span><b>${Number(d.stats?.total||0)}</b></div><div><span>Rewarded</span><b>${Number(d.stats?.rewarded||0)}</b></div><div><span>Pending</span><b>${Number(d.stats?.pending||0)}</b></div><div><span>Blocked</span><b>${Number(d.stats?.rejected||0)}</b></div></div><div class="profile-note">Referral reward referred customer-এর প্রথম eligible order Delivered হলে যোগ হবে। একই mobile/device বা spam pattern ধরা পড়লে reward block হতে পারে।</div></div><div class="box profile-panel"><h3>📋 Referral History</h3><div>${(d.referrals||[]).map(x=>`<div class="profile-address"><div class="profile-row"><b>${esc(x.referredName||'Customer')}</b><span class="profile-chip">${esc(x.status)}</span></div><small>${esc(x.referredPhone||'')}<br>Reward: ₹${Number(x.rewardAmount||0)}</small></div>`).join('')||'<div class="profile-note">এখনও কোনো referral নেই।</div>'}</div></div>`);
+  }catch(e){alert(e.message)}
+}
+async function shareReferralLink(link){
+  try{
+    if(navigator.share){await navigator.share({title:'SARKAR Restaurant Referral',text:'SARKAR Restaurant-এ join করুন আমার referral link দিয়ে।',url:link});}
+    else{await navigator.clipboard?.writeText(link);alert('Referral link copy হয়েছে।')}
+  }catch(e){}
+}
+
+function openAddressBook(){if(!profileLoggedIn()){openAccount('login');return;}renderAccountSettings();}
+
+function openLocationFromProfile(){ openCheckout(); setTimeout(getCurrentLocation,120); }
+function showProfileAbout(){ profileContent.innerHTML='<div class="box"><b>Support</b><p style="font-size:10px;color:#796d5d">আপনার অর্ডার, ঠিকানা ও delivery tracking এই profile থেকেই পরিচালনা করা যাবে।</p></div>'; }
+function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));let b=btn||document.querySelector(`.nav[data-page="${id}"]`);if(b)b.classList.add('active');scrollTo(0,0)}
+window.addEventListener('storage',e=>{if([S,P,O,SIG].includes(e.key)){orders=get(O,[]);render()}});if(profileLoggedIn())updateProfileUI(get(CU,{}));render(); productionLoad(); setInterval(productionRefreshOrders,10000);
+</script>
+
+<script>
+/* SARKAR v11 — order/data management foundation */
+(function(){
+  const ORDERS_KEY = 'sarkarOrdersV8';
+  const SIGNAL_KEY = 'sarkarNewOrderSignalV8';
+
+  function readOrders(){
+    try { return JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); }
+    catch(e){ return []; }
+  }
+  function writeOrders(orders){
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+    return orders;
+  }
+
+  window.SarkarOrderData = {
+    list: readOrders,
+    save: writeOrders,
+
+    create: function(order){
+      const orders = readOrders();
+      const now = new Date();
+      const item = Object.assign({
+        id: 'SRK-' + now.getTime().toString().slice(-8),
+        status: 'NEW',
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString()
+      }, order || {});
+      orders.unshift(item);
+      writeOrders(orders);
+
+      localStorage.setItem(SIGNAL_KEY, JSON.stringify({
+        type: 'NEW_ORDER',
+        orderId: item.id,
+        createdAt: item.createdAt,
+        signalAt: Date.now()
+      }));
+      return item;
+    },
+
+    updateStatus: function(id, status){
+      const orders = readOrders();
+      const index = orders.findIndex(o => String(o.id) === String(id));
+      if(index < 0) return null;
+      orders[index].status = status;
+      orders[index].updatedAt = new Date().toISOString();
+      writeOrders(orders);
+      return orders[index];
+    },
+
+    remove: function(id){
+      const orders = readOrders().filter(o => String(o.id) !== String(id));
+      writeOrders(orders);
+      return orders;
+    }
+  };
+})();
+</script>
+
+<script>productionLoad();</script></body>
+</html>
