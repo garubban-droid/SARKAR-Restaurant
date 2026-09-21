@@ -252,6 +252,93 @@
 @keyframes greenSignal{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.72}}50%{transform:scale(1.08);opacity:.72}}
 
 .food .media{overflow:hidden}.food-video{width:100%;height:100%;border:0;object-fit:cover;display:block}.food .media iframe{pointer-events:none}
+.checkout-location-highlight{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:54px;
+  box-sizing:border-box;
+  cursor:pointer;
+  overflow:hidden;
+  background:linear-gradient(135deg,#e9fff1,#d7f6e4);
+  border:1px solid #b9e4ca;
+  border-radius:15px;
+  padding:10px 12px;
+  margin:10px 0;
+  color:#09683f;
+  transition:.2s;
+}
+
+.checkout-location-highlight .signal{
+  width:30px;
+  height:30px;
+  flex:0 0 30px;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+}
+
+.location-status-wrap{
+  flex:1;
+  min-width:0;
+}
+
+.location-status-wrap b{
+  display:block;
+  font-size:11px;
+  font-weight:1000;
+}
+
+.location-status-wrap small{
+  display:block;
+  margin-top:3px;
+  font-size:8px;
+  color:#4d7b65;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.location-3d-btn{
+  width:40px;
+  height:40px;
+  flex:0 0 40px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(145deg,#ffffff,#cdebd9);
+  box-shadow:4px 4px 0 #9ccdb0,0 5px 12px rgba(20,100,60,.15);
+  color:#087b4d;
+  font-size:17px;
+  cursor:pointer;
+  transform:translateY(-1px);
+}
+
+.location-3d-btn:active{
+  transform:translate(3px,3px);
+  box-shadow:1px 1px 0 #9ccdb0;
+}
+
+.checkout-location-highlight.loading{
+  background:linear-gradient(135deg,#fff9df,#fff0bd);
+  border-color:#e6ca76;
+  color:#8a6209;
+}
+
+.checkout-location-highlight.loading .signal{
+  animation:locationPulse 1s infinite;
+}
+
+.checkout-location-highlight.success{
+  background:linear-gradient(135deg,#e8fff0,#c9f2d9);
+  border-color:#9bd5b1;
+  color:#087b4d;
+}
+
+@keyframes locationPulse{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.18);opacity:.55}
+  }
 </style>
 </head>
 <body>
@@ -301,7 +388,27 @@
     <button class="checkout-back" type="button" onclick="closeCheckout()"><span class="back-icon">🔙</span><span>ফিরে যান</span></button>
     <h2 style="margin:2px 0 4px">Checkout / চেকআউট</h2>
     <small style="font-size:8px;color:#8b7a62">আপনার অর্ডারটি নিশ্চিত করার আগে সব তথ্য দেখে নিন</small>
-    <div class="checkout-location-highlight" role="button" tabindex="0" onclick="getCurrentLocation()"><div class="signal">📶</div><div style="flex:1"><b>লোকেশন অনুমতি দিন</b></div></div>
+    <div id="checkoutLocationBox"
+     class="checkout-location-highlight location-ready"
+     role="button"
+     tabindex="0"
+     onclick="getCurrentLocation()">
+
+  <div class="signal">📍</div>
+
+  <div class="location-status-wrap">
+    <b id="checkoutLocationStatus">লোকেশন অনুমতি দিন</b>
+    <small id="checkoutLocationSub">Current Location ব্যবহার করতে ক্লিক করুন</small>
+  </div>
+
+  <button
+    type="button"
+    class="location-3d-btn"
+    onclick="event.stopPropagation();getCurrentLocation()">
+    📍
+  </button>
+
+</div>
     <div class="box checkout-section"><div class="section-title">📍 ডেলিভারি ঠিকানা</div><div class="address-card"><div class="address-card-head"><b id="checkoutRecipientName">নাম</b><button type="button" class="edit-address" onclick="openAddressEditor()">Edit</button></div><div id="checkoutRecipientPhone" class="address-preview"></div><div id="checkoutAddressPreview" class="address-preview">ঠিকানা যোগ করুন</div></div></div>
     <div class="order-summary-frame">
       <div class="section-title">🛍️ অর্ডারের আইটেম</div><div id="checkoutProduct"></div>
@@ -366,7 +473,43 @@ async function applyCoupon(){
   const p=products(),sub=cart.reduce((a,x)=>a+(Number(p[x.i]?.price||0)*x.q),0),fee=Number(settings().deliveryFee||0);
   try{const r=await fetch('/api/coupons/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:c,subtotal:sub,deliveryFee:fee})});const d=await r.json();if(!r.ok)throw Error(d.error||'কুপন গ্রহণ করা যায়নি');window.currentDiscount=Number(d.discount||0);document.getElementById('couponMsg').textContent=`✅ ₹${window.currentDiscount} ছাড় প্রয়োগ হয়েছে।`;renderCart();}catch(e){window.currentDiscount=0;document.getElementById('couponMsg').textContent='❌ '+e.message;renderCart();}
 }
-function openCheckout(){if(!cart.length){go('cart');return;}renderCart();checkout.classList.add('show');closeAddressEditor();syncPaymentUI();const ph=localStorage.getItem('sarkarCustomerPhoneV1')||'';if(ph&&!cp.value)cp.value=ph;updateCheckoutAddressPreview();}
+function openCheckout(){
+  if(!cart.length){
+    go('cart');
+    return;
+  }
+
+  renderCart();
+  checkout.classList.add('show');
+  closeAddressEditor();
+  syncPaymentUI();
+
+  const savedAddresses = get(CA,[]);
+  const saved = savedAddresses.find(x=>x.isDefault) || savedAddresses[0];
+  const customer = get(CU,{});
+
+  if(saved){
+    cn.value = saved.recipientName || customer.name || '';
+    cp.value = saved.phone || customer.phone || localStorage.getItem('sarkarCustomerPhoneV1') || '';
+
+    const parts = String(saved.address || '')
+      .split(',')
+      .map(x=>x.trim());
+
+    para.value = parts[0] || '';
+    gram.value = parts[1] || '';
+    post.value = parts[2] || '';
+    thana.value = parts[3] || '';
+    jela.value = parts[4] || '';
+    pin.value = parts[5] || '';
+    ca.value = saved.address || '';
+  }else{
+    const ph = localStorage.getItem('sarkarCustomerPhoneV1') || '';
+    if(ph && !cp.value) cp.value = ph;
+  }
+
+  updateCheckoutAddressPreview();
+}
 function openAddressEditor(){addressEditorReturn='checkout';const list=get(CA,[]),a=list.find(x=>x.isDefault)||list[0],c=get(CU,{});activeAddressId=a?.id||null;cn.value=a?.recipientName||c?.name||'';cp.value=a?.phone||c?.phone||localStorage.getItem('sarkarCustomerPhoneV1')||'';const parts=String(a?.address||'').split(',').map(x=>x.trim());para.value=parts[0]||'';gram.value=parts[1]||'';post.value=parts[2]||'';thana.value=parts[3]||'';jela.value=parts[4]||'';pin.value=parts[5]||'';ca.value=a?.address||'';document.getElementById('addressPage')?.classList.add('show');}
 function closeAddressEditor(){document.getElementById('addressPage')?.classList.remove('show');}
 let addressEditorReturn='checkout';
@@ -391,7 +534,7 @@ async function productionLoad(){
 }
 function authHeaders(){const t=localStorage.getItem(CT)||'';return t?{Authorization:'Bearer '+t}:{};}
 function updateProfileUI(c){if(!c)return;document.getElementById('profileName').textContent=c.name||'Customer';document.getElementById('profilePhone').textContent=c.phone||'';document.getElementById('profileAuthBtn').textContent='Account';}
-function applySavedAddress(list){const a=Array.isArray(list)?(list.find(x=>x.isDefault)||list[0]):null;if(!a)return;const parts=String(a.address||'').split(',').map(x=>x.trim());para.value=parts[0]||'';gram.value=parts[1]||'';post.value=parts[2]||'';thana.value=parts[3]||'';jela.value=parts[4]||'';pin.value=parts[5]||'';cn.value=a.recipientName||'';cp.value=a.phone||'';ca.value=a.address||'';if(a.latitude!=null&&a.longitude!=null)customerLocation={latitude:Number(a.latitude),longitude:Number(a.longitude)};updateCheckoutAddressPreview();}
+function applySavedAddress(list){const a=Array.isArray(list)?(list.find(x=>x.isDefault)||list[0]):null;if(!a)return;const parts=String(a.address||'').split(',').map(x=>x.trim());para.value=parts[0]||'';gram.value=parts[1]||'';post.value=parts[2]||'';thana.value=parts[3]||'';jela.value=parts[4]||'';pin.value=parts[5]||'';cn.value=a.recipientName||'';cp.value=a.phone||'';ca.value=a.address||'';updateCheckoutAddressPreview();}
 async function productionRefreshOrders(){
   if(!location.protocol.startsWith('http')) return;
   try{const token=localStorage.getItem(CT)||'';const url=token?'/api/orders':'/api/orders?phone='+encodeURIComponent(localStorage.getItem('sarkarCustomerPhoneV1')||'');if(!token&&!localStorage.getItem('sarkarCustomerPhoneV1'))return;const r=await fetch(url,{headers:token?authHeaders():{}});if(r.ok){orders=await r.json();set(O,orders);renderOrders();}}catch(e){}
@@ -425,8 +568,114 @@ async function productionPlaceOrder(){
   let customerLocation = null;
 let activeAddressId = null;
 
-async function getCurrentLocation(){if(!navigator.geolocation){alert('এই ফোনে GPS নেই');return;}navigator.geolocation.getCurrentPosition(async pos=>{customerLocation={latitude:Number(pos.coords.latitude),longitude:Number(pos.coords.longitude)};const loc=`Current Location: ${customerLocation.latitude.toFixed(6)}, ${customerLocation.longitude.toFixed(6)}`;ca.value=loc;try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&addressdetails=1&lat=${customerLocation.latitude}&lon=${customerLocation.longitude}`);const d=await r.json(),a=d.address||{};para.value=a.neighbourhood||a.suburb||a.hamlet||'';gram.value=a.village||a.town||a.city||'';post.value=a.postcode||'';thana.value=a.state_district||a.county||'';jela.value=a.state||a.state_district||'';pin.value=a.postcode||'';updateCheckoutAddressPreview();}catch(e){updateCheckoutAddressPreview();}},()=>{alert('লোকেশন অনুমতি দিন');},{enableHighAccuracy:true,timeout:20000,maximumAge:0});}
+let customerLocation = null;
+let locationLoaded = false;
+let locationLoading = false;
 
+async function getCurrentLocation(){
+
+  if(locationLoading) return;
+
+  const box = document.getElementById('checkoutLocationBox');
+  const status = document.getElementById('checkoutLocationStatus');
+  const sub = document.getElementById('checkoutLocationSub');
+
+  if(locationLoaded && customerLocation){
+    return;
+  }
+
+  if(!navigator.geolocation){
+    if(status) status.textContent='📍 GPS পাওয়া যাচ্ছে না';
+    if(sub) sub.textContent='এই ফোনে Location ব্যবহার করা যাচ্ছে না';
+    return;
+  }
+
+  locationLoading = true;
+
+  if(box) box.classList.remove('success');
+  if(box) box.classList.add('loading');
+
+  if(status) status.textContent='📍 লোকেশন লোড হচ্ছে...';
+  if(sub) sub.textContent='আপনার Current Location খোঁজা হচ্ছে';
+
+  navigator.geolocation.getCurrentPosition(
+    async pos => {
+
+      customerLocation = {
+        latitude:Number(pos.coords.latitude),
+        longitude:Number(pos.coords.longitude)
+      };
+
+      let locationText =
+        `Current Location: ${customerLocation.latitude.toFixed(6)}, ${customerLocation.longitude.toFixed(6)}`;
+
+      try{
+
+        const r = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&addressdetails=1&lat=${customerLocation.latitude}&lon=${customerLocation.longitude}`
+        );
+
+        const d = await r.json();
+
+        if(d && d.display_name){
+          locationText = `📍 ${d.display_name}`;
+        }
+
+      }catch(e){
+        // GPS coordinates থাকবে; reverse address না পেলেও location সফল
+      }
+
+      locationLoaded = true;
+      locationLoading = false;
+
+      if(box){
+        box.classList.remove('loading');
+        box.classList.add('success');
+      }
+
+      if(status){
+        status.textContent = locationText;
+      }
+
+      if(sub){
+        sub.textContent = '✓ Current Location পাওয়া গেছে';
+      }
+
+    },
+
+    err => {
+
+      locationLoading = false;
+
+      if(box) box.classList.remove('loading');
+
+      if(status){
+        status.textContent='📍 লোকেশন অনুমতি দিন';
+      }
+
+      if(sub){
+
+        if(err && err.code===1){
+          sub.textContent='Location permission দিন';
+        }else if(err && err.code===2){
+          sub.textContent='GPS Location পাওয়া যাচ্ছে না';
+        }else if(err && err.code===3){
+          sub.textContent='সময় শেষ হয়েছে, আবার চেষ্টা করুন';
+        }else{
+          sub.textContent='Location পাওয়া যায়নি';
+        }
+
+      }
+
+    },
+
+    {
+      enableHighAccuracy:true,
+      timeout:20000,
+      maximumAge:0
+    }
+  );
+}
 function placeOrder(){if(location.protocol.startsWith('http')) return productionPlaceOrder(); let n=cn.value.trim(),ph=cp.value.trim(),ad=ca.value.trim();if(!n||!ph||!ad)return alert('সব তথ্য পূরণ করুন');let p=products(),sub=cart.reduce((a,x)=>a+(p[x.i]?.price||0)*x.q,0),fee=settings().deliveryFee||0,o={id:'SK'+Date.now().toString().slice(-8),name:n,phone:ph,address:ad,total:sub+fee,items:cart.map(x=>({name:p[x.i]?.name,qty:x.q,price:p[x.i]?.price})),status:'Placed',createdAt:new Date().toISOString(),completedAt:null};orders.unshift(o);set(O,orders);set(SIG,{id:o.id,time:Date.now()});cart=[];set(C,[]);checkout.classList.remove('show');render();go('orders');alert('অর্ডার গ্রহণ হয়েছে।')}
 async function refreshTracking(id,token,el){
   try{
