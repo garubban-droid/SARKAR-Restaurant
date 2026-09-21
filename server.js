@@ -248,7 +248,13 @@ app.post('/api/customer/auth/signup',async(req,res)=>{
   try{
     await client.query('BEGIN');
     const code=await makeReferralCode(settings.codePrefix);
-    const r=await client.query(`INSERT INTO customers[name,phone,email||null,hash,code,referrer?.id||null,deviceHash,ipHash]
+    const r=await client.query(`INSERT INTO customers(
+name,phone,email,password_hash,referral_code,
+referred_by_customer_id,device_fingerprint_hash,signup_ip_hash
+)
+VALUES($1,$2,$3,$4,$5,$6,$7,$8)
+RETURNING id,name,phone,email,referral_code AS "referralCode"`,
+[name,phone,email||null,hash,code,referrer?.id||null,deviceHash,ipHash]);
       VALUES($1,$2,$3,$4,$5,$6,$7,$8)
       RETURNING id,name,phone,email,referral_code AS "referralCode"`,
       [name,phone,email||null,code,referrer?.id||null,deviceHash,ipHash]);
