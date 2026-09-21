@@ -69,21 +69,181 @@
 .order-detail-item-photo{width:52px;height:52px;object-fit:cover;display:block}
 .detail-item-name{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px}
 
-.order-rating-box{margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:15px;background:#fff}
-.order-rating-title{font-size:15px;font-weight:1000;margin-bottom:10px}
-.order-rating-stars{display:flex;justify-content:space-between;gap:4px}
-.order-rating-option{border:0;background:transparent;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;color:#6f6659;font-size:8px;font-weight:900;flex:1}
-.order-rating-option .star{font-size:25px;line-height:1;color:#d5cec1}
-.order-rating-option.selected .star{color:#f5b51b}
-.order-rating-option.selected{color:#79520f}
-.order-rating-option{transition:transform .08s ease}
-.order-rating-option:active{transform:scale(.90)}
-.order-review-editor{margin-top:10px;display:none}
-.order-review-editor.show{display:block}
-.order-review-editor textarea{width:100%;min-height:78px;box-sizing:border-box;border:1px solid var(--line);border-radius:11px;padding:10px;resize:vertical;font:inherit}
-.order-review-submit{width:100%;height:42px;margin-top:7px;border:0;border-radius:11px;background:#b98117;color:#fff;font-weight:1000}
-.order-rating-count{display:none!important}
-.order-rating-success{text-align:center;padding:9px;border-radius:10px;background:#e8f7ed;color:#087b4d;font-weight:900;font-size:10px;margin-top:9px}
+.order-rating-box{
+  margin-top:14px;
+  padding:15px;
+  border:1px solid #eadfc9;
+  border-radius:18px;
+  background:linear-gradient(180deg,#fffdf8,#fff);
+  box-shadow:0 5px 18px rgba(80,55,15,.06);
+}
+
+.order-rating-title{
+  font-size:18px;
+  font-weight:1000;
+  color:#30281f;
+}
+
+.order-rating-subtitle{
+  margin-top:4px;
+  font-size:11px;
+  color:#958a79;
+}
+
+.order-rating-stars{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px;
+  margin-top:14px;
+}
+
+.order-rating-option{
+  min-width:0;
+  border:1px solid #eadfc9;
+  border-radius:13px;
+  background:#fff;
+  padding:8px 3px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  transition:.18s;
+}
+
+.order-rating-option:active{
+  transform:scale(.96);
+}
+
+.order-rating-option.selected{
+  border:2px solid #d39a18;
+  background:#fff7df;
+  box-shadow:0 4px 12px rgba(190,135,20,.16);
+}
+
+.order-rating-option.locked{
+  cursor:default;
+}
+
+.rating-emoji{
+  font-size:25px;
+  line-height:1;
+}
+
+.rating-label{
+  font-size:8px;
+  font-weight:900;
+  color:#756957;
+  white-space:nowrap;
+}
+
+.order-review-editor{
+  display:none;
+  margin-top:12px;
+}
+
+.order-review-editor.show{
+  display:block;
+}
+
+.review-input-wrap{
+  position:relative;
+}
+
+.order-review-editor textarea{
+  width:100%;
+  min-height:105px;
+  resize:vertical;
+  box-sizing:border-box;
+  padding:12px 12px 28px;
+  border:1px solid #ded2bc;
+  border-radius:13px;
+  background:#fffdf9;
+  color:#30281f;
+  font-size:12px;
+  outline:none;
+}
+
+.order-review-editor textarea:focus{
+  border-color:#c58b16;
+  box-shadow:0 0 0 3px rgba(197,139,22,.10);
+}
+
+.order-review-editor textarea:disabled{
+  background:#f4f1ea;
+  color:#777;
+}
+
+.review-counter{
+  position:absolute;
+  right:10px;
+  bottom:7px;
+  font-size:9px;
+  color:#9b907e;
+}
+
+.order-review-submit{
+  width:100%;
+  height:43px;
+  margin-top:9px;
+  border:0;
+  border-radius:12px;
+  background:#bd8110;
+  color:#fff;
+  font-size:12px;
+  font-weight:1000;
+  cursor:pointer;
+}
+
+.order-review-submit:active{
+  transform:scale(.98);
+}
+
+.order-rating-success{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:12px;
+  padding:11px 12px;
+  border-radius:13px;
+  background:#edf9f0;
+  border:1px solid #ccebd3;
+  color:#16713a;
+}
+
+.success-icon{
+  width:27px;
+  height:27px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#25a75a;
+  color:#fff;
+  font-weight:1000;
+}
+
+.order-rating-success b{
+  display:block;
+  font-size:11px;
+}
+
+.order-rating-success small{
+  display:block;
+  margin-top:2px;
+  font-size:9px;
+  color:#568064;
+}
+
+.order-rating-count{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px 12px;
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px solid #eee5d5;
+  font-size:9px;
+  color:#8d8271;
+}
 .simple-status-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 8px;margin-top:13px}
 .simple-status-step{font-size:9px;color:#9d9588;display:flex;flex-direction:column;gap:5px;min-height:43px}
 .simple-status-signal{font-size:18px;line-height:24px;width:25px;height:25px;display:grid;place-items:center}
@@ -315,21 +475,99 @@ async function openOrderDetails(id){
   }catch(e){box.innerHTML='<div class="empty">অর্ডারের তথ্য পাওয়া যায়নি।</div>'}
 }
 
-function renderOrderRating(orderId, data={} ){
-  const saved=Number(data.rating||0), count5=Number(data.fiveStarCount||0), avg=Number(data.averageRating||0), total=Number(data.totalRatings||0);
-  return `<div class="order-rating-box">
-    <div class="order-rating-title">এই বিরিয়ানি কেমন?</div>
+function renderOrderRating(orderId, data = {}) {
+  const saved = Number(data.rating || 0);
+  const count5 = Number(data.fiveStarCount || 0);
+  const avg = Number(data.averageRating || 0);
+  const total = Number(data.totalRatings || 0);
+  const reviewSaved = !!data.saved;
+
+  const ratings = [
+    ['1', '😞', 'খুব খারাপ'],
+    ['2', '😕', 'খারাপ'],
+    ['3', '😐', 'মোটামুটি'],
+    ['4', '😊', 'ভালো'],
+    ['5', '😍', 'খুব ভালো']
+  ];
+
+  return `
+  <div class="order-rating-box ${reviewSaved ? 'review-completed' : ''}">
+
+    <div class="order-rating-title">
+      এই বিরিয়ানি কেমন?
+    </div>
+
+    <div class="order-rating-subtitle">
+      আপনার অভিজ্ঞতা আমাদের জানান
+    </div>
+
     <div class="order-rating-stars">
-      ${[['1','⭐','খুব খারাপ'],['2','⭐','খারাপ'],['3','⭐','মোটামুটি'],['4','⭐','ভালো'],['5','⭐','খুব ভালো']].map(x=>`<button type="button" class="order-rating-option ${saved===Number(x[0])?'selected':''}" onclick="selectOrderRating('${esc(orderId)}',${x[0]})"><span class="star">${x[1]}</span><span>${x[2]}</span></button>`).join('')}
+      ${ratings.map(x => `
+        <button
+          type="button"
+          class="order-rating-option ${saved === Number(x[0]) ? 'selected' : ''} ${reviewSaved ? 'locked' : ''}"
+          ${reviewSaved ? 'disabled' : ''}
+          onclick="selectOrderRating('${esc(orderId)}', ${x[0]})"
+        >
+          <span class="rating-emoji">${x[1]}</span>
+          <span class="rating-label">${x[2]}</span>
+        </button>
+      `).join('')}
     </div>
-    <div id="reviewEditor_${esc(orderId)}" class="order-review-editor ${saved?'show':''}">
-      <textarea id="reviewText_${esc(orderId)}" maxlength="500" placeholder="রিভিউ লিখুন...">${esc(data.review||'')}</textarea>
-      <button type="button" class="order-review-submit" onclick="submitOrderRating('${esc(orderId)}')">Submit</button>
+
+    <div
+      id="reviewEditor_${esc(orderId)}"
+      class="order-review-editor ${saved && !reviewSaved ? 'show' : ''}"
+    >
+
+      <div class="review-input-wrap">
+        <textarea
+          id="reviewText_${esc(orderId)}"
+          maxlength="500"
+          ${reviewSaved ? 'disabled' : ''}
+          placeholder="আপনার রিভিউ লিখুন..."
+          oninput="updateReviewCounter('${esc(orderId)}')"
+        >${esc(data.review || '')}</textarea>
+
+        ${!reviewSaved ? `
+          <div class="review-counter">
+            <span id="reviewCounter_${esc(orderId)}">
+              ${(data.review || '').length}/500
+            </span>
+          </div>
+        ` : ''}
+      </div>
+
+      ${!reviewSaved ? `
+        <button
+          type="button"
+          class="order-review-submit"
+          onclick="submitOrderRating('${esc(orderId)}')"
+        >
+          ⭐ Review Submit করুন
+        </button>
+      ` : ''}
+
     </div>
-    <div class="order-rating-count">⭐ 5 Star Rating: <b>${count5}</b> · মোট Rating: <b>${total}</b>${avg?` · Average: <b>${avg.toFixed(1)}</b>`:''}</div>
-    ${data.saved?'<div class="order-rating-success">✓ আপনার rating ও review সংরক্ষণ হয়েছে</div>':''}
+
+    ${reviewSaved ? `
+      <div class="order-rating-success">
+        <span class="success-icon">✓</span>
+        <div>
+          <b>Review সম্পন্ন হয়েছে</b>
+          <small>আপনার rating ও review সফলভাবে সংরক্ষণ করা হয়েছে।</small>
+        </div>
+      </div>
+    ` : ''}
+
+    <div class="order-rating-count">
+      <span>⭐ 5 Star Rating: <b>${count5}</b></span>
+      <span>মোট Rating: <b>${total}</b></span>
+      ${avg ? `<span>Average: <b>${avg.toFixed(1)} ⭐</b></span>` : ''}
+    </div>
+
   </div>`;
-}
+  }
 async function loadOrderRating(orderId){
   const el=document.getElementById('orderRating_'+String(orderId)); if(!el)return;
   try{
