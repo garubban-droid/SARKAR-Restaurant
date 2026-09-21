@@ -242,23 +242,41 @@ app.post('/api/customer/auth/signup',async(req,res)=>{
     }
   }
   const deviceHash=deviceId?hashSignal(deviceId+'|'+String(req.headers['user-agent']||'')):null;
-  const ipHash=hashSignal(req.ip||'');
-  const hash=await bcrypt.hash(password,12);
-  const client=await pool.connect();
-  try{
-    await client.query('BEGIN');
-    const code=await makeReferralCode(settings.codePrefix);
-    const r=await client.query(`INSERT INTO customers(
-name,phone,email,password_hash,referral_code,
-referred_by_customer_id,device_fingerprint_hash,signup_ip_hash
-)
-VALUES($1,$2,$3,$4,$5,$6,$7,$8)
-RETURNING id,name,phone,email,referral_code AS "referralCode"`,
-[name,phone,email||null,hash,code,referrer?.id||null,deviceHash,ipHash]);
-      VALUES($1,$2,$3,$4,$5,$6,$7,$8)
-      RETURNING id,name,phone,email,referral_code AS "referralCode"`,
-      [name,phone,email||null,code,referrer?.id||null,deviceHash,ipHash]);
-    const c=r.rows[0];
+const ipHash=hashSignal(req.ip||'');
+const hash=await bcrypt.hash(password,12);
+const client=await pool.connect();
+
+try{
+  await client.query('BEGIN');
+
+  const code=await makeReferralCode(settings.codePrefix);
+
+  const r=await client.query(
+    `INSERT INTO customers(
+      name,
+      phone,
+      email,
+      password_hash,
+      referral_code,
+      referred_by_customer_id,
+      device_fingerprint_hash,
+      signup_ip_hash
+    )
+    VALUES($1,$2,$3,$4,$5,$6,$7,$8)
+    RETURNING id,name,phone,email,referral_code AS "referralCode"`,
+    [
+      name,
+      phone,
+      email||null,
+      hash,
+      code,
+      referrer?.id||null,
+      deviceHash,
+      ipHash
+    ]
+  );
+
+  const c=r.rows[0];
     if(referrer && settings.enabled){
       const sameDevice=!!(deviceHash && referrer.device_fingerprint_hash && deviceHash===referrer.device_fingerprint_hash);
       const sameIp=!!(ipHash && referrer.signup_ip_hash && ipHash===referrer.signup_ip_hash);
