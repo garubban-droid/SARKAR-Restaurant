@@ -81,6 +81,10 @@
 
 
 <style>
+.more-settings-full-page{width:100%;padding:0 0 24px}.more-settings-head{display:flex;align-items:center;gap:10px;padding:4px 2px 10px}.more-settings-head h2{margin:0;font-size:22px}.more-settings-back{border:0;background:transparent;color:#26364a;font-size:30px;line-height:1;padding:0 4px;cursor:pointer}.more-settings-back:active{transform:scale(.9)}.more-settings-intro{font-size:10px;line-height:1.55;color:#5f5548;background:#fffdf8}.more-settings-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px}.more-settings-toolbar h3{margin:0;font-size:15px}.more-option-admin{border:1px solid #e4dccd;border-radius:14px;background:#fffdf8;padding:11px;margin-top:9px}.more-option-admin-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.more-option-admin-title{font-size:13px;font-weight:1000}.more-option-admin-actions{display:flex;gap:5px;flex-wrap:wrap}.more-option-admin-grid{display:grid;grid-template-columns:70px 1fr 1fr;gap:7px;margin-top:8px}.more-option-admin-grid input,.more-option-admin-grid select{height:32px;min-height:32px;font-size:10px;padding:6px 8px}.more-option-admin textarea{width:100%;min-height:95px;margin-top:7px;font-size:10px;line-height:1.45}.more-option-admin .switch{margin-top:7px}.more-option-admin .switch input{width:auto}.more-settings-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.more-settings-actions .btn{flex:1;min-width:145px}@media(max-width:520px){.more-option-admin-grid{grid-template-columns:58px 1fr}.more-option-admin-grid select{grid-column:1/-1}}
+</style>
+
+<style>
 .referral-full-page{width:100%;padding:0 0 24px}
 .referral-page-head{display:flex;align-items:center;gap:10px;padding:4px 2px 10px}
 .referral-page-head h2{margin:0;font-size:22px}
@@ -150,7 +154,7 @@
 
 <section id="coupons" class="page coupons-full-page">
 <div class="coupons-page-head">
-<button type="button" class="coupons-back" onclick="tab('restaurantManagement',document.querySelector('.tab[onclick^=\"tab(\\'restaurantManagement\\'\"]'))">🔙</button>
+<button type="button" class="coupons-back" onclick="backToRestaurant()">🔙</button>
 <div><h2>🎟️ Coupons</h2><div class="section-note">Active coupon management</div></div>
 </div>
 
@@ -179,32 +183,42 @@
 <section id="restaurantManagement" class="page">
 <div class="restaurant-management-page">
 <div class="rm-head">
-<button type="button" class="rm-back" onclick="tab('dashboard',document.querySelector('.tab[onclick^=\"tab(\\'dashboard\\'\"]'))">←</button>
+<button type="button" class="rm-back" onclick="backToDashboard()">🔙</button>
 <div>
 <h2>Restaurant Management</h2>
 </div>
 </div>
 
-<button type="button" class="rm-card" onclick="tab('settings',this)">
+<button type="button" class="rm-card" onclick="tab('settings',document.querySelector('.tab[onclick^=\"tab(\\'restaurantManagement\\'\"]'))">
 <div class="rm-icon">⚙️</div><div class="rm-card-text">Restaurant Settings</div><div class="rm-arrow">›</div>
 </button>
 
-<button type="button" class="rm-card" onclick="tab('referralSettings',this);loadReferralSettings()">
+<button type="button" class="rm-card" onclick="tab('moreSettings',document.querySelector('.tab[onclick^=\"tab(\'restaurantManagement\'\"]'));loadMoreSettings()">
+<div class="rm-icon">☰</div><div class="rm-card-text">More settings</div><div class="rm-arrow">›</div>
+</button>
+
+<button type="button" class="rm-card" onclick="tab('referralSettings',document.querySelector('.tab[onclick^=\"tab(\\'restaurantManagement\\'\"]'));loadReferralSettings()">
 <div class="rm-icon">🗣️</div><div class="rm-card-text">Referral settings</div><div class="rm-arrow">›</div>
 </button>
 
-<button type="button" class="rm-card" onclick="tab('coupons',this);loadCoupons()">
+<button type="button" class="rm-card" onclick="tab('coupons',document.querySelector('.tab[onclick^=\"tab(\\'restaurantManagement\\'\"]'));loadCoupons()">
 <div class="rm-icon">🎟️</div><div class="rm-card-text">Coupons</div><div class="rm-arrow">›</div>
 </button>
 
-<button type="button" class="rm-card" onclick="tab('riders',this);loadRiders()">
+<button type="button" class="rm-card" onclick="tab('riders',document.querySelector('.tab[onclick^=\"tab(\\'restaurantManagement\\'\"]'));loadRiders()">
 <div class="rm-icon">🛵</div><div class="rm-card-text">Riders</div><div class="rm-arrow">›</div>
 </button>
 </div>
 </section>
+
+<section id="moreSettings" class="page more-settings-full-page">
+<div class="more-settings-head"><button type="button" class="more-settings-back" onclick="backToRestaurant()">🔙</button><div><h2>☰ More settings</h2><div class="section-note">Customer App-এর “More / আরও” options — Edit / Delete / Publish</div></div></div>
+<div class="box more-settings-intro"><b>Auto set:</b> Customer App-এর বর্তমান More options এখানে automatically তৈরি থাকবে। Publish করলে Customer App-এ দেখাবে; Delete করলে আর দেখাবে না। Details এখানে edit করলে customer app-এও update হবে।</div>
+<div class="box"><div class="more-settings-toolbar"><h3>📱 Customer App · More / আরও</h3><button class="btn soft" onclick="addMoreOption()">＋ Add option</button></div><div id="moreOptionsList"></div><div class="more-settings-actions"><button class="btn gold" onclick="saveMoreSettings()">💾 Save & Publish</button><button class="btn soft" onclick="resetMoreSettings()">↺ Restore defaults</button></div><div class="section-note" style="margin-top:7px">About, Disclaimer, Privacy Policy, Terms & Conditions এবং অন্যান্য গুরুত্বপূর্ণ option-এর title, subtitle, icon, details ও publish control এখান থেকে চালানো যাবে।</div></div>
+</section>
 <section id="referralSettings" class="page referral-full-page">
 <div class="referral-page-head">
-<button type="button" class="referral-back" onclick="tab('restaurantManagement',document.querySelector('.tab[onclick^=\"tab(\\'restaurantManagement\\'\"]'))">🔙</button>
+<button type="button" class="referral-back" onclick="backToRestaurant()">🔙</button>
 <div><h2>🗣️ Referral settings</h2><div class="section-note">Referral, reward & fraud/spam management</div></div>
 </div>
 
@@ -263,7 +277,7 @@
 
 <section id="settings" class="page settings-full-page">
 <div class="settings-page-head">
-<button type="button" class="settings-back" onclick="tab('restaurantManagement',document.querySelector('.tab[onclick^=\"tab(\\'restaurantManagement\\'\"]'))">🔙</button>
+<button type="button" class="settings-back" onclick="backToRestaurant()">🔙</button>
 <div><h2>⚙️ Restaurant Settings</h2><div class="section-note">Restaurant Settings</div></div>
 </div>
 
@@ -290,7 +304,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const S='sarkarSiteSettingsV8',P='sarkarProductsV8',O='sarkarOrdersV8',SIG='sarkarNewOrderSignalV8',B='sarkarBackgroundsV8';
-const DEF={brandBn:'সরকার রেস্টুরেন্ট & বিরিয়ানি',brandEn:'SARKAR RESTAURANT & BIRYANI',address:'গোসাইপুর, হরিরামপুর রোড, মুর্শিদাবাদ, ওয়েস্ট বেঙ্গল, 742302',addressEn:'RESTAURANT ADDRESS',logo:'',open:true,ticker:['আজকের বিশেষ: গরুর মাংসের বিরিয়ানি তাজা রান্না হচ্ছে।'],heroTitle:'গরুর মাংসের বিরিয়ানি',heroSub:'প্রিমিয়াম স্বাদ · আজই অর্ডার করুন',heroButton:'আজই অর্ডার করুন',heroImage:'',heroVideo:'',popularTitle:'গরুর মাংসের বিরিয়ানি',popularSub:'',menuTitle:'মেনু',menuSub:'MENU',cartTitle:'কার্ট',cartSub:'CART',ordersTitle:'অর্ডার',ordersSub:'ORDERS',profileTitle:'প্রোফাইল',profileSub:'PROFILE',profileContent:'আপনার প্রোফাইলের তথ্য এখানে থাকবে।',deliveryFee:40};
+const DEF={brandBn:'সরকার রেস্টুরেন্ট & বিরিয়ানি',brandEn:'SARKAR RESTAURANT & BIRYANI',address:'গোসাইপুর, হরিরামপুর রোড, মুর্শিদাবাদ, ওয়েস্ট বেঙ্গল, 742302',addressEn:'RESTAURANT ADDRESS',logo:'',open:true,ticker:['আজকের বিশেষ: গরুর মাংসের বিরিয়ানি তাজা রান্না হচ্ছে।'],heroTitle:'গরুর মাংসের বিরিয়ানি',heroSub:'প্রিমিয়াম স্বাদ · আজই অর্ডার করুন',heroButton:'আজই অর্ডার করুন',heroImage:'',heroVideo:'',popularTitle:'গরুর মাংসের বিরিয়ানি',popularSub:'',menuTitle:'মেনু',menuSub:'MENU',cartTitle:'কার্ট',cartSub:'CART',ordersTitle:'অর্ডার',ordersSub:'ORDERS',profileTitle:'প্রোফাইল',profileSub:'PROFILE',profileContent:'আপনার প্রোফাইলের তথ্য এখানে থাকবে।',deliveryFee:40,moreOptions:[
+{id:'feedback',icon:'💬',title:'Your feedback',subtitle:'আপনার মতামত',type:'feedback',details:'আপনার অভিজ্ঞতা ও service সম্পর্কে মতামত পাঠাতে এই option ব্যবহার করুন।',published:true},
+{id:'about',icon:'ℹ️',title:'About',subtitle:'পরিচিতি',type:'content',details:'BIRYANI customer app সম্পর্কে তথ্য।\n🍛 Food ordering — Menu থেকে খাবার বেছে নিয়ে order করা যায়।\n🛵 Delivery tracking — Available order tracking information দেখা যায়।\n📍 Saved addresses — Delivery address সংরক্ষণ ও ব্যবহার করা যায়।\n🎁 Rewards — Referral ও promotional rewards account অনুযায়ী দেখা যেতে পারে।',published:true},
+{id:'disclaimer',icon:'⚠️',title:'Disclaimer',subtitle:'দায়মুক্তি / গুরুত্বপূর্ণ ঘোষণা',type:'content',details:'অর্ডারের availability, delivery time, price, offer ও service পরিস্থিতি অনুযায়ী পরিবর্তিত হতে পারে। Customer order confirm করার আগে প্রদর্শিত তথ্য যাচাই করবেন। Emergency বা গুরুত্বপূর্ণ বিষয়ে প্রয়োজন হলে স্থানীয় কর্তৃপক্ষ/জরুরি পরিষেবার সাহায্য নিন।',published:true},
+{id:'privacy',icon:'🔒',title:'Privacy Policy',subtitle:'গোপনীয়তা নীতি',type:'content',details:'আপনার account ও order সম্পর্কিত তথ্য service পরিচালনা, order processing, delivery এবং support-এর প্রয়োজন অনুযায়ী ব্যবহার করা হতে পারে। Password, OTP, card PIN বা CVV কারও সঙ্গে share করবেন না।',published:true},
+{id:'terms',icon:'📄',title:'Terms & Conditions',subtitle:'শর্তাবলি',type:'content',details:'Order করার মাধ্যমে customer প্রদর্শিত item, price, delivery information এবং applicable payment/cancellation terms মেনে নেন। Restaurant প্রয়োজন অনুযায়ী menu, price, availability ও delivery conditions update করতে পারে।',published:true},
+{id:'support',icon:'📞',title:'Contact & Support',subtitle:'যোগাযোগ ও সহায়তা',type:'content',details:'Order, payment, delivery বা app সংক্রান্ত সমস্যার জন্য Send feedback option ব্যবহার করুন। জরুরি safety issue হলে Safety option ব্যবহার করুন বা প্রয়োজন অনুযায়ী স্থানীয় emergency service-এর সাহায্য নিন।',published:true},
+{id:'send-feedback',icon:'✉️',title:'Send feedback',subtitle:'ফিডব্যাক পাঠান',type:'send-feedback',details:'সমস্যা, suggestion বা service feedback পাঠাতে এই form ব্যবহার করুন।',published:true},
+{id:'safety',icon:'🛡️',title:'Report a safety emergency',subtitle:'জরুরি নিরাপত্তা রিপোর্ট',type:'safety',details:'তাৎক্ষণিক বিপদে আগে স্থানীয় emergency service-এর সাহায্য নিন। ভারতে emergency number 112।',published:true},
+{id:'accessibility',icon:'♿',title:'Accessibility',subtitle:'সহজ ব্যবহার',type:'accessibility',details:'Animation কমানো এবং বড় লেখা চালু করার মতো visual settings এখান থেকে নিয়ন্ত্রণ করা যায়।',published:true},
+{id:'settings',icon:'⚙️',title:'Settings',subtitle:'সেটিংস',type:'settings',details:'Notification, location এবং account-related preferences পরিচালনা করুন।',published:true},
+{id:'logout',icon:'🚪',title:'Log out',subtitle:'লগ আউট',type:'logout',details:'এই device থেকে customer account log out করতে ব্যবহার করুন।',published:true}
+]};
 const DEFP=[{id:'p1',name:'প্রিমিয়াম গরুর মাংসের বিরিয়ানি',en:'PREMIUM BEEF BIRYANI',price:180,desc:'নরম গরুর মাংস, সুগন্ধি চাল ও বিশেষ মসলা।',image:'',video:'',published:true}];
 const DEFB=[];
 function get(k,d){try{let x=JSON.parse(localStorage.getItem(k));return x==null?d:x}catch(e){return d}}function set(k,v){localStorage.setItem(k,JSON.stringify(v))}
@@ -303,8 +329,16 @@ function hideLogin(){document.getElementById('loginGate').style.display='none'}
 async function adminLogin(){const err=document.getElementById('loginError');err.textContent='';try{const data=await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:loginEmail.value.trim(),password:loginPassword.value})});localStorage.setItem(API_TOKEN_KEY,data.token);hideLogin();await productionAdminLoad();}catch(e){err.textContent=e.message}}
 let couponsCache=[],ridersCache=[];
 async function productionAdminLoad(){if(!localStorage.getItem(API_TOKEN_KEY)){showLogin();return}try{const [s,p,o,c,r]=await Promise.all([api('/api/settings'),api('/api/admin/products'),api('/api/admin/orders'),api('/api/admin/coupons'),api('/api/admin/riders')]);set(S,{...DEF,...s});set(P,p);set(O,o);couponsCache=c||[];ridersCache=r||[];fill();hideLogin();renderCoupons();renderRiders()}catch(e){console.warn(e.message)}}
-function fill(){let s=site();['brandBn','brandEn','address','addressEn','logo','popularTitle','popularSub','menuTitle','menuSub','cartTitle','cartSub','ordersTitle','ordersSub','profileTitle','profileSub','profileContent','deliveryFee','heroTitle','heroSub','heroButton','heroImage','heroVideo'].forEach(k=>{let e=document.getElementById(k);if(e)e.value=s[k]??''});open.checked=!!s.open;renderUpdates();renderBackgrounds();renderProducts();renderDashboard();renderCustomers();renderDaily()}
+function fill(){let s=site();['brandBn','brandEn','address','addressEn','logo','popularTitle','popularSub','menuTitle','menuSub','cartTitle','cartSub','ordersTitle','ordersSub','profileTitle','profileSub','profileContent','deliveryFee','heroTitle','heroSub','heroButton','heroImage','heroVideo'].forEach(k=>{let e=document.getElementById(k);if(e)e.value=s[k]??''});open.checked=!!s.open;renderUpdates();renderBackgrounds();renderProducts();renderMoreOptions();renderDashboard();renderCustomers();renderDaily()}
 async function saveSite(){let s=site();['brandBn','brandEn','address','addressEn','logo','popularTitle','popularSub','menuTitle','menuSub','cartTitle','cartSub','ordersTitle','ordersSub','profileTitle','profileSub','profileContent','deliveryFee','heroTitle','heroSub','heroButton','heroImage','heroVideo'].forEach(k=>{let e=document.getElementById(k);if(e)s[k]=e.value});s.open=open.checked;try{const saved=await api('/api/settings',{method:'PUT',body:JSON.stringify(s)});set(S,saved);alert('Restaurant Settings saved')}catch(e){alert(e.message)}}
+function defaultMoreOptions(){return JSON.parse(JSON.stringify(DEF.moreOptions||[]))}
+function moreOptions(){const s=site();return Array.isArray(s.moreOptions)?s.moreOptions:defaultMoreOptions()}
+function renderMoreOptions(){const el=document.getElementById('moreOptionsList');if(!el)return;const list=moreOptions();el.innerHTML=list.map((x,i)=>`<div class="more-option-admin"><div class="more-option-admin-head"><div class="more-option-admin-title">${esc(x.icon||'☰')} ${esc(x.title||'Untitled')}</div><div class="more-option-admin-actions"><button class="btn red" onclick="deleteMoreOption(${i})">Delete</button></div></div><div class="more-option-admin-grid"><div><label>Icon</label><input data-mo-icon="${i}" value="${esc(x.icon||'☰')}"></div><div><label>Title / English</label><input data-mo-title="${i}" value="${esc(x.title||'')}"></div><div><label>Subtitle / বাংলা</label><input data-mo-subtitle="${i}" value="${esc(x.subtitle||'')}"></div><div><label>Type</label><select data-mo-type="${i}"><option value="content" ${x.type==='content'?'selected':''}>Content</option><option value="feedback" ${x.type==='feedback'?'selected':''}>Your feedback</option><option value="send-feedback" ${x.type==='send-feedback'?'selected':''}>Send feedback</option><option value="safety" ${x.type==='safety'?'selected':''}>Safety</option><option value="accessibility" ${x.type==='accessibility'?'selected':''}>Accessibility</option><option value="settings" ${x.type==='settings'?'selected':''}>Settings</option><option value="logout" ${x.type==='logout'?'selected':''}>Log out</option></select></div></div><label>Details / Description · Customer App-এ দেখাবে</label><textarea data-mo-details="${i}" placeholder="Option-এর বিস্তারিত লিখুন...">${esc(x.details||'')}</textarea><label class="switch"><input data-mo-published="${i}" type="checkbox" ${x.published!==false?'checked':''}> Publish / Customer App-এ দেখান</label></div>`).join('')||'<div class="empty">কোনো More option নেই। Add option চাপুন।</div>'}
+function addMoreOption(){const s=site();const list=moreOptions();list.push({id:'custom-'+Date.now(),icon:'⭐',title:'New option',subtitle:'নতুন option',type:'content',details:'এখানে customer app-এর জন্য বিস্তারিত লিখুন।',published:true});s.moreOptions=list;set(S,s);renderMoreOptions()}
+function deleteMoreOption(i){const s=site();const list=moreOptions();if(!list[i])return;if(!confirm('এই More option মুছে ফেলবেন?'))return;list.splice(i,1);s.moreOptions=list;set(S,s);renderMoreOptions()}
+async function saveMoreSettings(){const s=site();const old=moreOptions();s.moreOptions=[...document.querySelectorAll('[data-mo-title]')].map((e,i)=>({id:old[i]?.id||'custom-'+Date.now()+i,icon:document.querySelector(`[data-mo-icon="${i}"]`)?.value||'☰',title:e.value.trim()||'More',subtitle:document.querySelector(`[data-mo-subtitle="${i}"]`)?.value.trim()||'',type:document.querySelector(`[data-mo-type="${i}"]`)?.value||'content',details:document.querySelector(`[data-mo-details="${i}"]`)?.value||'',published:!!document.querySelector(`[data-mo-published="${i}"]`)?.checked}));try{const saved=await api('/api/settings',{method:'PUT',body:JSON.stringify(s)});set(S,saved);renderMoreOptions();alert('More settings saved & published')}catch(e){alert(e.message)}}
+async function resetMoreSettings(){if(!confirm('More settings default অবস্থায় ফিরিয়ে দেবেন?'))return;const s=site();s.moreOptions=defaultMoreOptions();try{const saved=await api('/api/settings',{method:'PUT',body:JSON.stringify(s)});set(S,saved);renderMoreOptions();alert('More settings defaults restored')}catch(e){alert(e.message)}}
+async function loadMoreSettings(){try{const s=await api('/api/settings');set(S,{...DEF,...s});renderMoreOptions()}catch(e){renderMoreOptions();alert(e.message)}}
 function renderUpdates(){let s=site();updates.innerHTML=(s.ticker||[]).map((x,i)=>`<div class="row" style="margin:5px 0"><input data-u="${i}" value="${esc(x)}"><button class="btn red" onclick="delUpdate(${i})">Delete</button></div>`).join('')}
 function addUpdate(){let s=site();s.ticker=[...(s.ticker||[]),'নতুন Daily Update'];set(S,s);renderUpdates()}function delUpdate(i){let s=site();s.ticker.splice(i,1);set(S,s);renderUpdates();saveSite()}async function saveUpdates(){let s=site();s.ticker=[...document.querySelectorAll('[data-u]')].map(e=>e.value).filter(Boolean);try{const saved=await api('/api/settings',{method:'PUT',body:JSON.stringify(s)});set(S,saved);alert('Updates saved')}catch(e){alert(e.message)}}
 function backgrounds(){return get(B,DEFB)}function addBackground(){let b=backgrounds();b.push({id:'b'+Date.now(),url:'',published:true});set(B,b);renderBackgrounds()}function delBg(i){let b=backgrounds();b.splice(i,1);set(B,b);renderBackgrounds()}function saveBackgrounds(){let b=backgrounds();b=[...document.querySelectorAll('[data-bg]')].map((e,i)=>({id:b[i]?.id||'b'+Date.now()+i,url:e.value,published:document.querySelector(`[data-bgp="${i}"]`).checked}));set(B,b);alert('Backgrounds saved')}
@@ -522,8 +556,9 @@ async function generateAndSaveRiderPassword(){const id=document.getElementById('
 async function toggleRider(id,active){try{const x=await api('/api/admin/riders/'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({active})});ridersCache=ridersCache.map(r=>String(r.id)===String(id)?{...r,...x}:r);renderRiderSelect();renderRiders()}catch(e){alert(e.message)}}
 function riderVal(v){return v==null||String(v).trim()===''?'—':String(v)}
 function renderRiders(){const el=document.getElementById('riderList');if(!el)return;el.innerHTML=ridersCache.map(r=>`<div class="rider-profile-card"><div class="rider-profile-top"><div><div class="rider-profile-name">🛵 ${esc(r.name)}</div><div class="meta">${r.active?'Active':'Inactive'} · ${r.online?'● Online':'● Offline'}</div></div><button class="btn ${r.active?'red':'green'}" onclick="toggleRider('${esc(r.id)}',${!r.active})">${r.active?'Deactivate':'Activate'}</button></div><div class="rider-profile-grid"><div><span>First Name</span><b>${esc(riderVal(r.firstName))}</b></div><div><span>Last Name</span><b>${esc(riderVal(r.lastName))}</b></div><div><span>Gender</span><b>${esc(riderVal(r.gender))}</b></div><div><span>DOB</span><b>${esc(riderVal(r.dob))}</b></div><div><span>Mobile</span><b>${esc(riderVal(r.phone))}</b></div><div><span>Email</span><b>${esc(riderVal(r.email))}</b></div><div><span>PIN Code</span><b>${esc(riderVal(r.pinCode))}</b></div><div><span>Full Address</span><b>${esc(riderVal(r.fullAddress))}</b></div></div></div>`).join('')||'<div class="empty">কোনো rider নেই।</div>'}
-function backToRestaurant(){const b=document.querySelectorAll('.tab')[3];tab('restaurantManagement',b)}
-function tab(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');scrollTo(0,0)}
+function backToDashboard(){const b=document.querySelector('.tab[onclick^="tab(\'dashboard\'"]');tab('dashboard',b)}
+function backToRestaurant(){const b=document.querySelector('.tab[onclick^="tab(\'restaurantManagement\'"]');tab('restaurantManagement',b)}
+function tab(id,b){const page=document.getElementById(id);if(!page)return;document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));page.classList.add('active');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));if(b&&b.classList?.contains('tab'))b.classList.add('active');scrollTo(0,0)}
 window.addEventListener('storage',()=>{renderDashboard();renderCustomers();renderDaily();fill()});document.addEventListener('input',e=>{if(e.target&&e.target.id==='orderSearch')renderDashboard()});fill(); productionAdminLoad(); setInterval(()=>{if(localStorage.getItem(API_TOKEN_KEY)) api('/api/admin/orders').then(x=>{set(O,x);renderDashboard();renderCustomers();renderDaily()}).catch(()=>{});},10000);
 </script>
 
