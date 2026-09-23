@@ -283,7 +283,17 @@
 #referralScreen.show{display:block}
 body.referral-open{overflow:hidden}
 body.referral-open .bottom,body.referral-open .app{display:none!important}
-.ref-screen-inner{width:min(560px,100%);min-height:100vh;margin:auto;background:linear-gradient(180deg,#f7f0df,#fffaf0);position:relative;padding-bottom:30px}
+.ref-hero{
+  min-height:360px;
+  position:relative;
+  overflow:hidden;
+  background-image:
+    linear-gradient(rgba(0,0,0,.30),rgba(0,0,0,.30)),
+    url("https://i.ibb.co/4nYcQ87B/IMG-20260924-014244.png");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
 .ref-hero{height:365px;margin:0;position:relative;overflow:hidden;background:radial-gradient(circle at 75% 20%,rgba(255,224,137,.5),transparent 25%),linear-gradient(145deg,#6c4520 0%,#2d2118 42%,#8a4b20 100%)}
 .ref-hero:before{content:"🍛";position:absolute;right:-22px;bottom:22px;font-size:175px;opacity:.16;filter:blur(.5px);transform:rotate(-8deg)}
 .ref-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.08) 42%,rgba(0,0,0,.78) 100%)}
