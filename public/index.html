@@ -283,8 +283,10 @@
 #referralScreen.show{display:block}
 body.referral-open{overflow:hidden}
 body.referral-open .bottom,body.referral-open .app{display:none!important}
+.ref-hero{min-height:360px;position:relative;overflow:hidden;background:linear-gradient(180deg,#f7f0df,#fffaf0)}
 .ref-hero{
-  min-height:360px;
+  height:365px;
+  margin:0;
   position:relative;
   overflow:hidden;
   background-image:
@@ -294,7 +296,6 @@ body.referral-open .bottom,body.referral-open .app{display:none!important}
   background-position:center;
   background-repeat:no-repeat;
 }
-.ref-hero{height:365px;margin:0;position:relative;overflow:hidden;background:radial-gradient(circle at 75% 20%,rgba(255,224,137,.5),transparent 25%),linear-gradient(145deg,#6c4520 0%,#2d2118 42%,#8a4b20 100%)}
 .ref-hero:before{content:"🍛";position:absolute;right:-22px;bottom:22px;font-size:175px;opacity:.16;filter:blur(.5px);transform:rotate(-8deg)}
 .ref-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.08) 42%,rgba(0,0,0,.78) 100%)}
 .ref-topbar{position:absolute;z-index:5;left:14px;right:14px;top:12px;height:52px;display:flex;align-items:center;justify-content:space-between}
