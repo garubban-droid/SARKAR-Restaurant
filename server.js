@@ -55,11 +55,14 @@ await pool.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_longitude
     console.log('Admin user initialized:', email);
   }
   if(process.env.RIDER_PHONE && process.env.RIDER_PASSWORD){
-    const phone=cleanPhone(process.env.RIDER_PHONE);
-    const name=String(process.env.RIDER_NAME||'SARKAR Rider').trim();
-    const hash=await bcrypt.hash(String(process.env.RIDER_PASSWORD),12);
-    await pool.query('INSERT INTO riders(name,phone,password_hash) VALUES($1,$2,$3) ON CONFLICT(phone) DO UPDATE SET name=EXCLUDED.name,password_hash=EXCLUDED.password_hash,active=true',[name,phone,hash]);
-    console.log('Rider user initialized:', phone);
+  const phone=cleanPhone(process.env.RIDER_PHONE);
+  const name=String(process.env.RIDER_NAME||'SARKAR Rider').trim();
+  const hash=await bcrypt.hash(String(process.env.RIDER_PASSWORD),12);
+  await pool.query(
+    'INSERT INTO riders(phone,password_hash,name) VALUES($1,$2,$3) ON CONFLICT(phone) DO UPDATE SET password_hash=$2,name=$3',
+    [phone,hash,name]
+  );
+  console.log('Rider user initialized:', phone);
   }
   await pool.query(`CREATE TABLE IF NOT EXISTS customer_order_ratings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
