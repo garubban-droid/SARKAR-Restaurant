@@ -325,7 +325,7 @@ app.post('/api/customer/auth/send-otp',async(req,res)=>{
     const referralCode=normalizeCoupon(req.body.referralCode);
     const deviceId=String(req.body.deviceId||'').trim().slice(0,180);
     if(phone.length!==10)return res.status(400).json({error:'Valid 10-digit mobile number is required'});
-    if(mode==='signup'&&!name&&req.body.deferSignup!==true)return res.status(400).json({error:'Name is required'});
+    if(mode==='signup'&&!name&&req.body.deferSignup!==true){ /* name is collected after OTP */ }
     const exists=await q('SELECT id FROM customers WHERE phone=$1',[phone]);
     if(mode==='signup'&&exists.rowCount)return res.status(409).json({error:'এই মোবাইল নম্বর দিয়ে account আগে থেকেই আছে'});
     if(mode==='login'&&!exists.rowCount)return res.status(404).json({error:'এই মোবাইল নম্বর দিয়ে কোনো account পাওয়া যায়নি'});
