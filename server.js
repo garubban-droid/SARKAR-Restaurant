@@ -257,10 +257,22 @@ async function issueCustomerOtp({phone,mode,pendingData}){
   const otp=makeOtp();
   await q(`UPDATE customer_otps SET used_at=COALESCE(used_at,now()) WHERE phone=$1 AND mode=$2 AND used_at IS NULL`,[phone,mode]);
   await sendCustomerOtpSms(phone,otp);
-  await q(`INSERT INTO customer_otps(phone,mode,otp_hash,pending_data,attempts,expires_at)
-    VALUES($1,$2,$3,$4,0,now()+interval '5 minutes')`,
-    [phone,mode,otpHash(phone,otp),JSON.stringify(pendingData||{})]);
-}
+ await q(`INSERT INTO customer_otps(
+  phone,
+  mode,
+  otp_hash,
+  code_hash,
+  pending_data,
+  attempts,
+  expires_at
+)
+VALUES($1,$2,$3,$3,$4,0,now()+interval '5 minutes')`,
+[
+  phone,
+  mode,
+  otpHash(phone,otp),
+  JSON.stringify(pendingData||{})
+]); 
 
 function tokenHash(v){return crypto.createHash('sha256').update(String(v||'')).digest('hex')}
 function hashSignal(v){return tokenHash(String(v||'')+'|'+String(process.env.JWT_SECRET||'SARKAR'))}
