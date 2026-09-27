@@ -56,7 +56,7 @@ await pool.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_longitude
   }
   if(process.env.RIDER_PHONE && process.env.RIDER_PASSWORD){
     const phone=cleanPhone(process.env.RIDER_PHONE);
-    const name=String(process.env.RIDER_NAME||'SARKAR Rider').trim();
+    const name=String(process.env.RIDER_NAME||'MI EXPRESS BIRYANI Rider').trim();
     const hash=await bcrypt.hash(String(process.env.RIDER_PASSWORD),12);
     await pool.query('INSERT INTO riders(name,phone,password_hash) VALUES($1,$2,$3) ON CONFLICT(phone) DO UPDATE SET name=EXCLUDED.name,password_hash=EXCLUDED.password_hash,active=true',[name,phone,hash]);
     console.log('Rider user initialized:', phone);
@@ -242,23 +242,31 @@ function makeOtp(){return String(crypto.randomInt(100000,1000000))}
 async function sendCustomerOtpSms(phone,otp){
   const apiKey=String(process.env.TWOFACTOR_API_KEY||'').trim();
   if(!apiKey)throw new Error('2Factor API key is not configured on Render');
-  const templateName=String(process.env.TWOFACTOR_TEMPLATE_NAME||'MIEXPRESSOTP').trim();
-  const r=await fetch('https://2factor.in/API/V1/OTP/SEND',{
+  const templateName=String(process.env.TWOFACTOR_TEMPLATE_NAME||'LOGIN_OTP').trim();
+  const endpoint=String(process.env.TWOFACTOR_API_URL||'https://2factor.in/API/V1/OTP/SEND').trim();
+  // 2Factor's documented OTP/SEND API accepts X-API-Key and a JSON
+  // payload containing the recipient, DLT template name and OTP variable.
+  const r=await fetch(endpoint,{
     method:'POST',
     headers:{'Content-Type':'application/json','X-API-Key':apiKey,'Accept':'application/json'},
     body:JSON.stringify({
       to:otpPhoneForProvider(phone),
-      channel:'SMS',
       template_name:templateName,
       var1:otp
     })
   });
+  const contentType=String(r.headers.get('content-type')||'').toLowerCase();
   const raw=await r.text();
   let data={};
   try{data=JSON.parse(raw)}catch{}
   const status=String(data.status||'').toLowerCase();
   if(!r.ok || status!=='sent'){
-    const detail=String(data.message||data.error||data.reason||raw||'Unknown 2Factor error').trim();
+    let detail=String(data.message||data.error||data.reason||'Unknown 2Factor error').trim();
+    if(r.status===404){
+      detail='2Factor OTP endpoint returned 404. Check TWOFACTOR_API_URL, API key, and the OTP/DLT template configured in your 2Factor account.';
+    }else if(!contentType.includes('json') && detail==='Unknown 2Factor error'){
+      detail='2Factor returned a non-JSON error response. Check the API URL, API key, and OTP/DLT template configuration.';
+    }
     throw new Error(`2Factor OTP failed (${r.status}): ${detail}`);
   }
   return data;
@@ -903,9 +911,40 @@ app.post('/api/auth/rider/login',async(req,res)=>{const phone=cleanPhone(req.bod
 app.post('/api/auth/rider/logout',riderAuth,async(req,res)=>{await q('UPDATE riders SET online=false,updated_at=now() WHERE id=$1',[req.rider.sub]);res.json({ok:true})});
 app.get('/api/rider/me',riderAuth,async(req,res)=>{const r=await q('SELECT id,name,phone,active,online,first_name AS "firstName",last_name AS "lastName",gender,dob,email,full_address AS "fullAddress",pin_code AS "pinCode" FROM riders WHERE id=$1',[req.rider.sub]);if(!r.rowCount)return res.status(404).json({error:'Rider not found'});res.json(r.rows[0])});
 app.patch('/api/rider/availability',riderAuth,async(req,res)=>{const online=Boolean(req.body.online);const r=await q('UPDATE riders SET online=$1,updated_at=now() WHERE id=$2 AND active=true RETURNING id,name,phone,online',[online,req.rider.sub]);if(!r.rowCount)return res.status(404).json({error:'Rider not found'});res.json(r.rows[0])});
+app.get('/api/rider/stats',riderAuth,async(req,res)=>{
+  try{
+    const r=await q(`SELECT
+      COUNT(*) FILTER (WHERE status='READY')::int AS new_orders,
+      COUNT(*) FILTER (WHERE status='OUT_FOR_DELIVERY')::int AS active_delivery,
+      COUNT(*) FILTER (WHERE status='DELIVERED')::int AS total_completed,
+      COUNT(*) FILTER (WHERE status='DELIVERED' AND completed_at::date=CURRENT_DATE)::int AS today_completed,
+      COUNT(*) FILTER (WHERE status='DELIVERED' AND completed_at>=date_trunc('month',CURRENT_DATE))::int AS month_completed,
+      COALESCE(SUM(total) FILTER (WHERE status='DELIVERED' AND completed_at::date=CURRENT_DATE),0)::numeric AS today_earning,
+      COALESCE(SUM(total) FILTER (WHERE status='DELIVERED' AND completed_at>=date_trunc('month',CURRENT_DATE)),0)::numeric AS month_earning
+      FROM orders WHERE assigned_rider_id=$1`,[req.rider.sub]);
+    const d=await q(`SELECT completed_at::date AS date,COUNT(*)::int AS completed,COALESCE(SUM(total),0)::numeric AS earning
+      FROM orders WHERE assigned_rider_id=$1 AND status='DELIVERED' AND completed_at>=date_trunc('month',CURRENT_DATE)
+      GROUP BY completed_at::date ORDER BY date DESC LIMIT 31`,[req.rider.sub]);
+    const x=r.rows[0]||{};
+    res.json({summary:{newOrders:Number(x.new_orders||0),activeDelivery:Number(x.active_delivery||0),totalCompleted:Number(x.total_completed||0),todayCompleted:Number(x.today_completed||0),monthCompleted:Number(x.month_completed||0),todayEarning:Number(x.today_earning||0),monthEarning:Number(x.month_earning||0)},daily:d.rows.map(v=>({date:v.date,completed:Number(v.completed||0),earning:Number(v.earning||0)}))});
+  }catch(e){res.status(500).json({error:e.message||'Unable to load rider stats'})}
+});
 app.get('/api/rider/orders',riderAuth,async(req,res)=>{const client=await pool.connect();try{await client.query('BEGIN');const rider=await client.query('SELECT id FROM riders WHERE id=$1 AND active=true AND online=true FOR UPDATE',[req.rider.sub]);if(rider.rowCount){const pending=await client.query(`SELECT id FROM orders WHERE assigned_rider_id IS NULL AND status='READY' ORDER BY created_at ASC LIMIT 5 FOR UPDATE SKIP LOCKED`);for(const row of pending.rows)await client.query('UPDATE orders SET assigned_rider_id=$1,updated_at=now() WHERE id=$2 AND assigned_rider_id IS NULL',[req.rider.sub,row.id]);}await client.query('COMMIT');const r=await client.query(`SELECT o.id,o.customer_name AS name,o.phone,o.address,o.items,o.subtotal,o.delivery_fee,o.total,o.status,o.payment_method AS "paymentMethod",o.payment_status AS "paymentStatus",o.delivery_latitude AS "customerLat",o.delivery_longitude AS "customerLon",o.created_at AS "createdAt",o.updated_at AS "updatedAt" FROM orders o WHERE o.assigned_rider_id=$1 AND o.status IN ('READY','OUT_FOR_DELIVERY') ORDER BY CASE WHEN o.status='OUT_FOR_DELIVERY' THEN 0 ELSE 1 END,o.created_at ASC`,[req.rider.sub]);res.json(r.rows)}catch(e){await client.query('ROLLBACK').catch(()=>{});res.status(500).json({error:e.message})}finally{client.release()}});
 app.patch('/api/rider/orders/:id/status',riderAuth,async(req,res)=>{const status=String(req.body.status||'').toUpperCase();if(!['OUT_FOR_DELIVERY','DELIVERED'].includes(status))return res.status(400).json({error:'Invalid rider status'});const r=await q('UPDATE orders SET status=$1,updated_at=now(),completed_at=CASE WHEN $1=\'DELIVERED\' THEN COALESCE(completed_at,now()) ELSE completed_at END WHERE id=$2 AND assigned_rider_id=$3 AND status IN (\'READY\',\'OUT_FOR_DELIVERY\') RETURNING id,status',[status,req.params.id,req.rider.sub]);if(!r.rowCount)return res.status(404).json({error:'Assigned order not found'});if(status==='DELIVERED'){const od=await q('SELECT customer_id,total FROM orders WHERE id=$1',[req.params.id]);if(od.rowCount){const client=await pool.connect();try{await client.query('BEGIN');await maybeRewardReferral(client,od.rows[0].customer_id,req.params.id,od.rows[0].total);await client.query('COMMIT')}catch(e){await client.query('ROLLBACK').catch(()=>{});console.warn('Referral reward failed',e.message)}finally{client.release()}}}res.json(r.rows[0])});
 app.post('/api/rider/location',riderAuth,async(req,res)=>{const orderId=String(req.body.orderId||'');const lat=Number(req.body.latitude),lng=Number(req.body.longitude),accuracy=req.body.accuracy==null?null:Number(req.body.accuracy);if(!orderId||!Number.isFinite(lat)||!Number.isFinite(lng)||lat<-90||lat>90||lng<-180||lng>180)return res.status(400).json({error:'Invalid location'});const r=await q('SELECT id,status FROM orders WHERE id=$1 AND assigned_rider_id=$2 AND status IN (\'OUT_FOR_DELIVERY\',\'READY\')',[orderId,req.rider.sub]);if(!r.rowCount)return res.status(404).json({error:'Assigned order not found'});await q('INSERT INTO tracking_points(order_id,latitude,longitude,accuracy) VALUES($1,$2,$3,$4)',[orderId,lat,lng,Number.isFinite(accuracy)?accuracy:null]);await q("UPDATE orders SET status='OUT_FOR_DELIVERY',updated_at=now() WHERE id=$1 AND status='READY'",[orderId]);res.json({ok:true,orderId})});
+app.post('/api/admin/orders/:id/delivery-session',auth,async(req,res)=>{
+  const r=await q('SELECT id FROM orders WHERE id=$1',[req.params.id]);
+  if(!r.rowCount)return res.status(404).json({error:'Order not found'});
+  const token=jwt.sign({scope:'delivery_session',orderId:String(req.params.id)},process.env.JWT_SECRET,{expiresIn:'30m'});
+  res.json({ok:true,deliveryUrl:`/track/${encodeURIComponent(token)}`});
+});
+app.get('/track/:token',async(req,res)=>{
+  try{
+    const p=jwt.verify(String(req.params.token||''),process.env.JWT_SECRET);
+    if(p.scope!=='delivery_session')throw new Error();
+    res.redirect('/');
+  }catch{res.status(410).send('Delivery session expired');}
+});
 app.get('/api/admin/orders/:id/tracking',auth,async(req,res)=>{const o=await q('SELECT id,status,delivery_latitude AS "customerLat",delivery_longitude AS "customerLon",assigned_rider_id AS "assignedRiderId" FROM orders WHERE id=$1',[req.params.id]);if(!o.rowCount)return res.status(404).json({error:'Order not found'});const t=await q('SELECT latitude,longitude,accuracy,recorded_at AS "recordedAt" FROM tracking_points WHERE order_id=$1 ORDER BY recorded_at DESC LIMIT 1',[req.params.id]);const x=t.rows[0]||null;let distanceKm=null,etaMin=null;if(x&&o.rows[0].customerLat!=null&&o.rows[0].customerLon!=null){try{const rr=await fetch(`https://router.project-osrm.org/route/v1/driving/${x.longitude},${x.latitude};${o.rows[0].customerLon},${o.rows[0].customerLat}?overview=false`);const route=await rr.json();if(route.routes?.[0]){distanceKm=+(route.routes[0].distance/1000).toFixed(1);etaMin=Math.round(route.routes[0].duration/60)}}catch{}}res.json({order:o.rows[0],location:x,distanceKm,etaMin})});
 app.get('/api/customer/orders/:id', async (req,res)=>{
   try{
