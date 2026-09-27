@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: mi-express-biryani
+    runtime: node
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATABASE_PATH
+        value: ./data/mi-express-biryani.db
+      - key: ENABLE_ONLINE_PAYMENTS
+        value: "false"
+      - key: OTP_PROVIDER
+        value: 2factor
