@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: mi-express-biryani
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_SSL
+        value: "true"
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: RIDER_PHONE
+        sync: false
+      - key: RIDER_PASSWORD
+        sync: false
+      - key: RIDER_NAME
+        value: "MI EXPRESS BIRYANI Rider"
+      - key: CORS_ORIGIN
+        sync: false
+      - key: OTP_PROVIDER
+        value: "2factor"
+      - key: TWOFACTOR_API_KEY
+        sync: false
+      - key: TWOFACTOR_TEMPLATE_NAME
+        value: "LOGIN_OTP"
+      - key: TWOFACTOR_API_URL
+        value: "https://2factor.in/API/V1/OTP/SEND"
+      - key: ENABLE_ONLINE_PAYMENTS
+        value: "false"
