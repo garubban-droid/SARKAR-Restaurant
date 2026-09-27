@@ -30,7 +30,9 @@ services:
         sync: false
       - key: TWOFACTOR_TEMPLATE_NAME
         value: "LOGIN_OTP"
-      - key: TWOFACTOR_API_URL
-        value: "https://2factor.in/API/V1/OTP/SEND"
+      - key: TWOFACTOR_SENDER_ID
+        value: "TFCTOR"
+      - key: TWOFACTOR_MESSAGE_TEMPLATE
+        value: "Your MI EXPRESS BIRYANI OTP is {otp}. Valid for 5 minutes."
       - key: ENABLE_ONLINE_PAYMENTS
         value: "false"

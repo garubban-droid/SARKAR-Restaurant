@@ -286,8 +286,33 @@ async function sendCustomerOtpSms(phone,otp){
     }
   }
 
+  // Legacy 2Factor SMS endpoint. 2Factor also documents this form for
+  // accounts that are still using the API-key-in-path integration.
+  // It lets us keep generating/verifying the OTP on our own server.
   if(lastStatus===404){
-    throw new Error('2Factor OTP service returned 404 from its documented endpoints. Verify the 2Factor API key/account and approved OTP/DLT template; no OTP was accepted.');
+    const senderId=String(process.env.TWOFACTOR_SENDER_ID||'TFCTOR').trim();
+    const message=String(process.env.TWOFACTOR_MESSAGE_TEMPLATE||
+      'Your MI EXPRESS BIRYANI OTP is {otp}. Valid for 5 minutes.').replace(/\{otp\}/g,otp);
+    const legacyUrl='https://2factor.in/API/V1/'+encodeURIComponent(apiKey)+'/SMS/'+
+      encodeURIComponent(phone)+'/'+encodeURIComponent(message)+'/'+encodeURIComponent(senderId);
+    try{
+      const r=await fetch(legacyUrl,{headers:{'Accept':'application/json,text/plain,*/*'}});
+      const raw=await r.text();
+      let data={};
+      try{data=JSON.parse(raw)}catch{}
+      const status=String(data.status||data.Status||data.message||raw||'').toLowerCase();
+      if(r.ok && (status.includes('success') || status.includes('sent') || status.includes('ok'))){
+        return data;
+      }
+      lastStatus=r.status;
+      lastDetail=String(data.message||data.error||data.reason||raw||'Legacy 2Factor SMS endpoint rejected the request').trim().slice(0,300);
+    }catch(e){
+      lastStatus=502;
+      lastDetail=String(e?.message||e||'Network error').slice(0,300);
+    }
+  }
+  if(lastStatus===404){
+    throw new Error('2Factor returned 404. The API key/account may be on a different API version, or the DLT/SMS template configuration is not enabled.');
   }
   throw new Error(`2Factor OTP failed (${lastStatus}): ${lastDetail}`);
 }
