@@ -43,12 +43,12 @@ This package contains the integrated customer app, admin panel, rider app, Expre
 - Rider statistics and daily/monthly delivery report
 
 ## Render setup
-Set these environment variables in Render: `DATABASE_URL`, `DATABASE_SSL=true`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `RIDER_PHONE`, `RIDER_PASSWORD`, `OTP_PROVIDER=2factor`, `TWOFACTOR_API_KEY`, `TWOFACTOR_TEMPLATE_NAME`, `TWOFACTOR_API_URL`, and `ENABLE_ONLINE_PAYMENTS=false`.
+Set these environment variables in Render: `DATABASE_URL`, `DATABASE_SSL=true`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `RIDER_PHONE`, `RIDER_PASSWORD`, `OTP_PROVIDER=2factor`, `TWOFACTOR_API_KEY`, `TWOFACTOR_TEMPLATE_NAME`, and `ENABLE_ONLINE_PAYMENTS=false`.
 
 The server initializes the admin/rider account from the environment variables. Never commit real secrets to GitHub.
 
 ## OTP
-The backend generates a six-digit OTP, sends it through the configured 2Factor endpoint and stores only a hash for verification. The 2Factor endpoint is configurable with `TWOFACTOR_API_URL`; the default is `https://2factor.in/API/V1/OTP/SEND`. The documented request uses `X-API-Key`, recipient, template name and OTP variable. If 2Factor returns HTTP 404, the server now reports a short configuration error instead of dumping the provider's HTML page into the customer UI.
+The backend generates a six-digit OTP, sends it through the configured 2Factor endpoint and stores only a hash for verification. The server uses `https://2factor.in/API/V1/OTP/SEND` by default and does not require `TWOFACTOR_API_URL`. The documented request uses `X-API-Key`, recipient, template name and OTP variable. If 2Factor returns HTTP 404, the server now reports a short configuration error instead of dumping the provider's HTML page into the customer UI.
 
 ## Payment
 Current launch mode is COD. Razorpay code remains available for a later controlled activation, but `ENABLE_ONLINE_PAYMENTS=false` should remain set until credentials and verification are configured.
@@ -60,3 +60,7 @@ Current launch mode is COD. Razorpay code remains available for a later controll
 4. Set the environment variables above.
 5. Redeploy.
 6. Test `/api/health`, then `/`, `/admin`, and `/rider`.
+
+
+## OTP troubleshooting
+The server uses 2Factor's documented OTP endpoint by default and has a compatibility fallback for the unified gateway. `TWOFACTOR_API_URL` is intentionally not required. If both endpoints return 404, the issue is outside the customer UI and should be checked in the 2Factor account/API key/approved OTP-DLT template configuration.

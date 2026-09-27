@@ -243,33 +243,53 @@ async function sendCustomerOtpSms(phone,otp){
   const apiKey=String(process.env.TWOFACTOR_API_KEY||'').trim();
   if(!apiKey)throw new Error('2Factor API key is not configured on Render');
   const templateName=String(process.env.TWOFACTOR_TEMPLATE_NAME||'LOGIN_OTP').trim();
-  const endpoint=String(process.env.TWOFACTOR_API_URL||'https://2factor.in/API/V1/OTP/SEND').trim();
-  // 2Factor's documented OTP/SEND API accepts X-API-Key and a JSON
-  // payload containing the recipient, DLT template name and OTP variable.
-  const r=await fetch(endpoint,{
-    method:'POST',
-    headers:{'Content-Type':'application/json','X-API-Key':apiKey,'Accept':'application/json'},
-    body:JSON.stringify({
-      to:otpPhoneForProvider(phone),
-      template_name:templateName,
-      var1:otp
-    })
-  });
-  const contentType=String(r.headers.get('content-type')||'').toLowerCase();
-  const raw=await r.text();
-  let data={};
-  try{data=JSON.parse(raw)}catch{}
-  const status=String(data.status||'').toLowerCase();
-  if(!r.ok || status!=='sent'){
-    let detail=String(data.message||data.error||data.reason||'Unknown 2Factor error').trim();
-    if(r.status===404){
-      detail='2Factor OTP endpoint returned 404. Check TWOFACTOR_API_URL, API key, and the OTP/DLT template configured in your 2Factor account.';
-    }else if(!contentType.includes('json') && detail==='Unknown 2Factor error'){
-      detail='2Factor returned a non-JSON error response. Check the API URL, API key, and OTP/DLT template configuration.';
+
+  // Primary 2Factor OTP endpoint documented by 2Factor.
+  // Keep this URL fixed by default so an accidental/old Render
+  // TWOFACTOR_API_URL value cannot send the app to a dead endpoint.
+  const endpoints=[
+    {
+      url:'https://2factor.in/API/V1/OTP/SEND',
+      body:{to:otpPhoneForProvider(phone),channel:'SMS',template:templateName,template_name:templateName,var1:otp}
+    },
+    // 2Factor's current unified gateway is a compatibility fallback.
+    {
+      url:'https://2factor.in/v1/send',
+      body:{channel:'SMS',to:otpPhoneForProvider(phone),template:templateName,var1:otp}
     }
-    throw new Error(`2Factor OTP failed (${r.status}): ${detail}`);
+  ];
+
+  let lastStatus=502;
+  let lastDetail='Unable to reach 2Factor OTP service';
+  for(const ep of endpoints){
+    try{
+      const r=await fetch(ep.url,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-API-Key':apiKey,'Accept':'application/json'},
+        body:JSON.stringify(ep.body)
+      });
+      const contentType=String(r.headers.get('content-type')||'').toLowerCase();
+      const raw=await r.text();
+      let data={};
+      try{data=JSON.parse(raw)}catch{}
+      const status=String(data.status||'').toLowerCase();
+      if(r.ok && (status==='sent' || status==='success' || status==='ok')) return data;
+
+      lastStatus=r.status;
+      lastDetail=String(data.message||data.error||data.reason||'2Factor rejected the OTP request').trim();
+      // Try the compatibility endpoint only for endpoint/version errors.
+      if(r.status!==404 && r.status!==405) break;
+      if(!contentType.includes('json') && r.status===404) lastDetail='2Factor endpoint returned 404';
+    }catch(e){
+      lastStatus=502;
+      lastDetail=String(e?.message||e||'Network error').slice(0,300);
+    }
   }
-  return data;
+
+  if(lastStatus===404){
+    throw new Error('2Factor OTP service returned 404 from its documented endpoints. Verify the 2Factor API key/account and approved OTP/DLT template; no OTP was accepted.');
+  }
+  throw new Error(`2Factor OTP failed (${lastStatus}): ${lastDetail}`);
 }
 async function issueCustomerOtp({phone,mode,pendingData}){
   const latest=await q(`SELECT created_at FROM customer_otps WHERE phone=$1 AND mode=$2 ORDER BY created_at DESC LIMIT 1`,[phone,mode]);
