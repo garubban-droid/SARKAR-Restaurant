@@ -49,7 +49,7 @@
 .section h2{margin:0;font-size:21px;font-weight:1000}
 .section small{display:block;font-size:13px;color:#967d51;font-weight:800;margin-top:3px;letter-spacing:.3px}
 .cards{padding:0 12px 18px}
-.food{background:linear-gradient(145deg,#fff,#fffaf0);border:1px solid #eadfc8;border-radius:18px;overflow:hidden;box-shadow:0 10px 25px rgba(76,48,10,.10),0 2px 0 #ead7aa;margin-bottom:14px}
+.food{content-visibility:auto;contain-intrinsic-size:360px 420px;background:linear-gradient(145deg,#fff,#fffaf0);border:1px solid #eadfc8;border-radius:18px;overflow:hidden;box-shadow:0 10px 25px rgba(76,48,10,.10),0 2px 0 #ead7aa;margin-bottom:14px}
 .media{height:245px;position:relative;background:linear-gradient(135deg,#f3ead8,#dfcca0);overflow:hidden}
 .media img,.media video{width:100%;height:100%;object-fit:cover;display:block}
 .media iframe{width:100%;height:100%;border:0}
@@ -1262,10 +1262,35 @@ function media(x){
   if(x.video){
     const y=yt(x.video);
     if(y) return `<iframe class="food-video" src="https://www.youtube.com/embed/${y}?autoplay=1&mute=1&loop=1&playlist=${y}&controls=0&playsinline=1&rel=0&start=0&end=20" allow="autoplay;encrypted-media" loading="lazy"></iframe>`;
-    return `<video class="food-video" src="${esc(x.video)}" autoplay muted loop playsinline preload="metadata" data-preview-seconds="20" onloadedmetadata="this.currentTime=0;this.play().catch(()=>{});this._stop20=setTimeout(()=>{this.currentTime=0;this.play().catch(()=>{});},20000)"></video>`;
+    return `<video class="food-video deferred-media" data-src="${esc(x.video)}" muted loop playsinline preload="none" data-preview-seconds="20"></video>`;
   }
-  if(x.image) return `<img src="${esc(x.image)}" alt="${esc(x.name)}" loading="lazy" style="width:100%;height:100%;object-fit:cover">`;
+  if(x.image) return `<img src="${esc(x.image)}" alt="${esc(x.name)}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover">`;
   return `<div class="logo logo-fallback"></div>`;
+}
+const LAZY_CARD_CHUNK=6;
+function renderLazyCards(el,items,wrapper){
+  if(!el)return;
+  if(el._lazyObserver){try{el._lazyObserver.disconnect()}catch(_){}}
+  el.innerHTML='';
+  if(!items.length){el.innerHTML=`<div class="empty">${getAppLanguage()==='en'?'No items available.':'কোনো খাবার পাওয়া যায়নি।'}</div>`;return;}
+  let next=0;
+  const sentinel=document.createElement('div');sentinel.className='lazy-card-sentinel';sentinel.style.cssText='height:1px;width:100%;pointer-events:none';
+  function appendChunk(){
+    const end=Math.min(next+LAZY_CARD_CHUNK,items.length);
+    const html=items.slice(next,end).map((x,j)=>wrapper?`<div class="menu-card">${card(x,next+j)}</div>`:card(x,next+j)).join('');
+    sentinel.insertAdjacentHTML('beforebegin',html);next=end;observeDeferredMedia(el);
+    if(next>=items.length){sentinel.remove();try{el._lazyObserver?.disconnect()}catch(_){} }
+  }
+  appendChunk();el.appendChild(sentinel);
+  if(next<items.length&&'IntersectionObserver' in window){
+    el._lazyObserver=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))appendChunk()},{rootMargin:'900px 0px'});el._lazyObserver.observe(sentinel);
+  }else{while(next<items.length)appendChunk();sentinel.remove();}
+}
+function observeDeferredMedia(root=document){
+  const nodes=root.querySelectorAll?.('video.deferred-media[data-src]:not([data-loaded])')||[];if(!nodes.length)return;
+  const load=v=>{if(v.dataset.loaded)return;v.src=v.dataset.src;v.dataset.loaded='1';v.addEventListener('loadedmetadata',()=>{v.currentTime=0;v.play().catch(()=>{});v._stop20=setTimeout(()=>{v.currentTime=0;v.play().catch(()=>{});},20000)},{once:true});v.load();};
+  if(!('IntersectionObserver' in window)){nodes.forEach(load);return;}
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){load(e.target);io.unobserve(e.target)}}),{rootMargin:'700px'});nodes.forEach(v=>io.observe(v));
 }
 function card(x,i){
   const isEn=getAppLanguage()==='en';
@@ -1623,12 +1648,11 @@ function render(){
     heroEl.innerHTML=heroMedia(s)+`<div class="hero-copy"><h1>${esc(hTitle)}</h1><p>${esc(hSub)}</p><button onclick="go('menu')">${esc(hBtn)}</button></div>`;
   }
 
-  const emptyMsg=isEn?'No items available.':'কোনো খাবার পাওয়া যায়নি।';
   const popCardsEl=document.getElementById('popularCards');
-  if(popCardsEl) popCardsEl.innerHTML=p.map(card).join('')||`<div class="empty">${emptyMsg}</div>`;
+  if(popCardsEl) renderLazyCards(popCardsEl,p,false);
 
   const mCardsEl=document.getElementById('menuCards');
-  if(mCardsEl) mCardsEl.innerHTML=p.map((x,i)=>`<div class="menu-card">${card(x,i)}</div>`).join('')||`<div class="empty">${emptyMsg}</div>`;
+  if(mCardsEl) renderLazyCards(mCardsEl,p,true);
 
   renderCart();
   renderOrders();
@@ -3517,7 +3541,7 @@ body .ref-share-main,body .ref-share{font-size:9.5px!important}
 .hero-copy button,.order{padding:7px 12px}
 .section{padding:8px 11px 4px}
 .cards{padding:0 10px 14px}
-.food{border-radius:15px;margin-bottom:11px}
+.food{content-visibility:auto;contain-intrinsic-size:360px 420px;border-radius:15px;margin-bottom:11px}
 .media{height:218px}
 .food-body{padding:10px 12px 12px}
 .food-bottom{margin-top:8px}

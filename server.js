@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import pg from 'pg';
 import crypto from 'node:crypto';
 import path from 'node:path';
+import fsSync from 'node:fs';
 import {fileURLToPath} from 'node:url';
 
 const {Pool}=pg;
@@ -17,7 +18,11 @@ const app=express();
 app.set('trust proxy', 1);
 const pool=new Pool({connectionString:process.env.DATABASE_URL,ssl:process.env.DATABASE_SSL==='true'?{rejectUnauthorized:false}:false});
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
+// Static files live in the project root in this deployment (index.html, assets/, icons/).
+// Keep explicit mounts instead of assuming a /public folder exists.
 const publicDir=path.join(__dirname,"public");
+const assetsDir=path.join(__dirname,"assets");
+const iconsDir=path.join(__dirname,"icons");
 
 async function initDatabase(){
   const fs = await import('node:fs/promises');
@@ -198,16 +203,38 @@ app.disable('x-powered-by');
 app.use(helmet({contentSecurityPolicy:false}));
 app.use(cors({origin:process.env.CORS_ORIGIN?.split(',').map(x=>x.trim())||false}));
 app.use(express.json({limit:'1mb',verify:(req,res,buf)=>{if(req.originalUrl==='/api/payments/razorpay/webhook')req.rawBody=Buffer.from(buf)}}));
+let dbReadyResolve, dbReadyReject;
+let dbReady = new Promise((resolve,reject)=>{ dbReadyResolve=resolve; dbReadyReject=reject; });
+app.use('/api', async (req,res,next)=>{
+  try{ await dbReady; next(); }
+  catch(error){ res.status(503).json({error:'Service is starting. Please retry shortly.'}); }
+});
+
 app.use('/api/auth',rateLimit({windowMs:15*60*1000,max:20,standardHeaders:true,legacyHeaders:false}));
 app.use('/api/orders',rateLimit({windowMs:60*1000,max:60,standardHeaders:true,legacyHeaders:false}));
 app.use('/api/customer/auth',rateLimit({windowMs:15*60*1000,max:30,standardHeaders:true,legacyHeaders:false}));
-app.use(express.static(publicDir));
+// Fast static delivery: long-cache immutable assets; HTML/PWA entry files stay revalidatable.
+if (fsSync.existsSync(publicDir)) app.use(express.static(publicDir, { maxAge: '1h' }));
+app.use('/assets', express.static(assetsDir, {
+  maxAge: '7d',
+  immutable: true,
+  fallthrough: true
+}));
+app.use('/icons', express.static(iconsDir, {
+  maxAge: '30d',
+  immutable: true,
+  fallthrough: true
+}));
 
-// PWA files live in the project root (not inside public/).
-// Serve them explicitly so Chrome can validate and install the PWA.
-app.get('/manifest.json',(req,res)=>res.sendFile(path.join(__dirname,'manifest.json')));
-app.get('/service-worker.js',(req,res)=>res.sendFile(path.join(__dirname,'service-worker.js'),{headers:{'Cache-Control':'no-cache'}}));
-app.use('/icons',express.static(path.join(__dirname,'icons')));
+// PWA files live in the project root.
+app.get('/manifest.json',(req,res)=>{
+  res.set('Cache-Control','public, max-age=300, must-revalidate');
+  res.sendFile(path.join(__dirname,'manifest.json'));
+});
+app.get('/service-worker.js',(req,res)=>{
+  res.set('Cache-Control','no-cache, no-store, must-revalidate');
+  res.sendFile(path.join(__dirname,'service-worker.js'));
+});
 
 const q=(text,params=[])=>pool.query(text,params);
 function auth(req,res,next){try{const h=req.headers.authorization||'';if(!h.startsWith('Bearer '))return res.status(401).json({error:'Unauthorized'});req.admin=jwt.verify(h.slice(7),process.env.JWT_SECRET);next()}catch{return res.status(401).json({error:'Unauthorized'})}}
@@ -1040,18 +1067,42 @@ app.post('/api/notifications/order-status',auth,async(req,res)=>{const id=String
 app.get('/api/admin/daily',auth,async(_,res)=>{const r=await q(`SELECT DATE(completed_at) AS day,COUNT(*)::int AS orders,COUNT(DISTINCT phone)::int AS customers,COALESCE(SUM(total),0)::numeric AS total FROM orders WHERE status='DELIVERED' AND completed_at IS NOT NULL GROUP BY DATE(completed_at) ORDER BY day DESC LIMIT 366`);res.json(r.rows)});
 app.get('/admin', (req,res) => res.sendFile(path.join(__dirname,'admin.html')));
 app.get('/rider', (req,res) => res.sendFile(path.join(__dirname,'rider.html')));
-app.get('/index.html', (req,res) => res.sendFile(path.join(__dirname,'index.html')));
-app.get('/', (req,res) => res.sendFile(path.join(__dirname,'index.html')));
+function sendCustomerApp(req,res){
+  res.set('Cache-Control','no-cache, no-store, must-revalidate');
+  res.set('Pragma','no-cache');
+  res.set('Vary','Accept-Encoding');
+
+  const ae=String(req.headers['accept-encoding']||'').toLowerCase();
+  const brPath=path.join(__dirname,'index.html.br');
+  const gzPath=path.join(__dirname,'index.html.gz');
+
+  if(ae.includes('br') && fsSync.existsSync(brPath)){
+    res.set('Content-Encoding','br');
+    res.type('html');
+    return res.sendFile(brPath);
+  }
+  if(ae.includes('gzip') && fsSync.existsSync(gzPath)){
+    res.set('Content-Encoding','gzip');
+    res.type('html');
+    return res.sendFile(gzPath);
+  }
+  res.type('html');
+  res.sendFile(path.join(__dirname,'index.html'));
+}
+app.get('/index.html', sendCustomerApp);
+app.get('/', sendCustomerApp);
 app.use((req,res)=>{if(req.path.startsWith('/api/'))return res.status(404).json({error:'Not found'});res.status(404).send('Not found')});
 const port=Number(process.env.PORT||3000);
 
 async function startServer(){
+  // Listen first so the customer app shell and referral links open immediately on cold starts.
+  app.listen(port,()=>console.log(`Sarkar production server listening on :${port}`));
   try{
     await initDatabase();
-    app.listen(port,()=>console.log(`Sarkar production server listening on :${port}`));
+    dbReadyResolve();
   }catch(error){
     console.error('Database initialization failed:',error);
-    process.exit(1);
+    dbReadyReject(error);
   }
 }
 startServer();
