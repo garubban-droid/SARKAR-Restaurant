@@ -1,13 +1,13 @@
 {
   "name": "MI Express Biryani",
-"short_name": "MI Express Biryani"
+  "short_name": "MI Express Biryani",
   "description": "MI EXPRESS BIRYANI Customer App",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#1A0D05"
-  "theme_color": "#fffaf0",
+  "background_color": "#160a03",
+  "theme_color": "#160a03",
   "icons": [
     {
       "src": "icons/icon-192.png",
