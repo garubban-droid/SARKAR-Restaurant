@@ -778,13 +778,8 @@ input, select, textarea {
 html.mi-flow-lock,body.mi-flow-lock{overflow:hidden!important}
 body.mi-flow-lock > .app{visibility:hidden!important;pointer-events:none!important}
 #miExpressLaunchFlow{
-  position:fixed;inset:0;z-index:1000000;
+  position:fixed;inset:0;z-index:1000000;background:#fff8f3;
   overflow:hidden;display:flex;align-items:center;justify-content:center;
-  background:#160a03 url("./assets/mi-express-launch.png") center center / cover no-repeat;
-}
-#miExpressLaunchFlow::after{
-  content:"";position:absolute;inset:0;
-  background:rgba(0,0,0,.04);pointer-events:none;
 }
 #miExpressLoginFrame{
   position:absolute;inset:0;width:100%;height:100%;border:0;
@@ -2402,23 +2397,34 @@ async function deleteSavedAddress(id){
 }
 function logoutCustomer(){
   document.body.classList.remove('profile-more-open');
-  // Clear the complete customer session before leaving the app.
-  localStorage.removeItem(CT);
-  localStorage.removeItem('mi_express_logged_in_v1');
-  localStorage.removeItem('mi_express_phone');
-  localStorage.removeItem(CU);
-  localStorage.removeItem(CA);
-  localStorage.removeItem('sarkarCustomerPhoneV1');
-  localStorage.removeItem('miAutoOpenCheckoutAfterCouponV1');
-  try{ sessionStorage.removeItem(CT); }catch(_e){}
 
-  // Return directly to the production OTP Login screen. Reloading the same
-  // Render URL resets the authenticated app state and the startup flow opens
-  // the Login/OTP screen automatically without requiring a manual refresh.
+  // Fully clear the authenticated customer session.
+  // IMPORTANT: the startup/login gate checks sarkarCustomerTokenV2,
+  // so this token MUST be removed on logout or the app will reopen Home
+  // instead of showing the Login/OTP screen.
+  try{
+    localStorage.removeItem(CT);
+    localStorage.removeItem(CU);
+    localStorage.removeItem(CA);
+    localStorage.removeItem('sarkarCustomerPhoneV1');
+    localStorage.removeItem('sarkarCustomerTokenV2');
+    localStorage.removeItem('mi_express_logged_in_v1');
+    localStorage.removeItem('mi_express_phone');
+    localStorage.removeItem('miAutoOpenCheckoutAfterCouponV1');
+    sessionStorage.removeItem(CT);
+    sessionStorage.removeItem('sarkarCustomerTokenV2');
+  }catch(_e){}
+
   window.loginReturnPage=null;
+
+  // Reload the same production URL. Since the customer token is now gone,
+  // the startup gate will show the Login/OTP screen automatically.
   setTimeout(()=>{
-    try{ window.location.replace(window.location.href.split('#')[0]); }
-    catch(_e){ window.location.reload(); }
+    try{
+      window.location.replace(window.location.href.split('#')[0]);
+    }catch(_e){
+      try{ window.location.reload(); }catch(__e){}
+    }
   },50);
 }
 
