@@ -242,38 +242,21 @@ function makeOtp(){return String(crypto.randomInt(100000,1000000))}
 async function sendCustomerOtpSms(phone,otp){
   const apiKey=String(process.env.TWOFACTOR_API_KEY||'').trim();
   if(!apiKey)throw new Error('2Factor API key is not configured on Render');
-  const templateName=String(process.env.TWOFACTOR_TEMPLATE_NAME||'MIEXPRESSOTP').trim();
-  const to=otpPhoneForProvider(phone);
 
-  // 2Factor's current OTP REST endpoint.
-  const current=await fetch('https://2factor.in/API/V1/OTP/SEND',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','X-API-Key':apiKey,'Accept':'application/json'},
-    body:JSON.stringify({to,template_name:templateName,var1:otp})
-  });
-  const currentRaw=await current.text();
-  let currentData={};
-  try{currentData=JSON.parse(currentRaw)}catch{}
-  const currentStatus=String(currentData.status||'').toLowerCase();
-  if(current.ok && currentStatus==='sent') return currentData;
+  // IMPORTANT: use 2Factor MANUAL OTP API so the SMS contains the SAME OTP
+  // that we store in customer_otps. AUTOGEN generates a different provider-side
+  // OTP, which caused a valid received code to be rejected by our local check.
+  const to=`+91${phone}`;
+  const url='https://2factor.in/API/V1/'+encodeURIComponent(apiKey)+'/SMS/'+encodeURIComponent(to)+'/'+encodeURIComponent(otp);
+  const r=await fetch(url,{method:'GET',headers:{'Accept':'application/json'}});
+  const raw=await r.text();
+  let data={};
+  try{data=JSON.parse(raw)}catch{}
+  const status=String(data.Status||data.status||'').toLowerCase();
+  if(r.ok && status==='success') return data;
 
-  // Some existing 2Factor accounts use the legacy Manual OTP API.
-  // Retry there when the newer REST endpoint is unavailable (notably 404).
-  const legacyUrl='https://2factor.in/API/V1/'+encodeURIComponent(apiKey)+'/SMS/'+encodeURIComponent(phone)+'/AUTOGEN/'+encodeURIComponent(templateName);
-  const legacy=await fetch(legacyUrl,{method:'GET',headers:{'Accept':'application/json'}});
-  const legacyRaw=await legacy.text();
-  let legacyData={};
-  try{legacyData=JSON.parse(legacyRaw)}catch{}
-  const legacyStatus=String(legacyData.Status||legacyData.status||'').toLowerCase();
-  if(legacy.ok && (legacyStatus==='success'||legacyStatus==='sent')){
-    return legacyData;
-  }
-
-  const detail=String(
-    legacyData.Details||legacyData.message||legacyData.error||
-    currentData.message||currentData.error||currentRaw||legacyRaw||'Unknown 2Factor error'
-  ).trim();
-  throw new Error(`2Factor OTP failed (${legacy.status||current.status}): ${detail}`);
+  const detail=String(data.Details||data.message||data.error||raw||'Unknown 2Factor error').trim();
+  throw new Error(`2Factor OTP failed (${r.status}): ${detail}`);
 }
 async function issueCustomerOtp({phone,mode,pendingData}){
   const latest=await q(`SELECT created_at FROM customer_otps WHERE phone=$1 AND mode=$2 ORDER BY created_at DESC LIMIT 1`,[phone,mode]);
