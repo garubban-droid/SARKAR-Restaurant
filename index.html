@@ -1261,12 +1261,32 @@ function direct(u){return /\.(mp4|webm|ogg)(\?.*)?$/i.test(u||'')}
 function media(x){
   if(x.video){
     const y=yt(x.video);
-    if(y) return `<iframe class="food-video" src="https://www.youtube.com/embed/${y}?autoplay=1&mute=1&loop=1&playlist=${y}&controls=0&playsinline=1&rel=0&start=0&end=20" allow="autoplay;encrypted-media" loading="lazy"></iframe>`;
-    return `<video class="food-video" src="${esc(x.video)}" autoplay muted loop playsinline preload="metadata" data-preview-seconds="20" onloadedmetadata="this.currentTime=0;this.play().catch(()=>{});this._stop20=setTimeout(()=>{this.currentTime=0;this.play().catch(()=>{});},20000)"></video>`;
+    if(y) return `<iframe class="food-video food-video-youtube" data-src="https://www.youtube.com/embed/${y}?autoplay=1&mute=1&loop=1&playlist=${y}&controls=0&playsinline=1&rel=0&start=0&end=20" allow="autoplay;encrypted-media" loading="lazy" title="${esc(x.name||'Food video')}"></iframe>`;
+    const poster=x.image?` poster="${esc(x.image)}"`:'';
+    return `<video class="food-video" data-src="${esc(x.video)}"${poster} muted loop playsinline preload="none" data-preview-seconds="20"></video>`;
   }
-  if(x.image) return `<img src="${esc(x.image)}" alt="${esc(x.name)}" loading="lazy" style="width:100%;height:100%;object-fit:cover">`;
+  if(x.image) return `<img src="${esc(x.image)}" alt="${esc(x.name)}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover">`;
   return `<div class="logo logo-fallback"></div>`;
 }
+
+let mediaAutoplayObserver=null;
+function setupFastMediaAutoplay(){
+  if(mediaAutoplayObserver) mediaAutoplayObserver.disconnect();
+  const videos=[...document.querySelectorAll('.food-video')];
+  if(!videos.length)return;
+  const loadAndPlay=(el)=>{
+    if(el.dataset.src && !el.getAttribute('src')) el.setAttribute('src',el.dataset.src);
+    if(el.tagName==='VIDEO'){ el.muted=true; el.playsInline=true; const p=el.play(); if(p&&p.catch)p.catch(()=>{}); }
+  };
+  const pause=(el)=>{ if(el.tagName==='VIDEO') el.pause(); };
+  if('IntersectionObserver' in window){
+    mediaAutoplayObserver=new IntersectionObserver(entries=>{
+      entries.forEach(e=>e.isIntersecting ? loadAndPlay(e.target) : pause(e.target));
+    },{root:null,rootMargin:'300px 0px',threshold:0.15});
+    videos.forEach(v=>mediaAutoplayObserver.observe(v));
+  }else videos.forEach(loadAndPlay);
+}
+
 function card(x,i){
   const isEn=getAppLanguage()==='en';
   const enMeta=PRODUCT_EN_TRANSLATIONS[x.name]||{};
@@ -1629,6 +1649,7 @@ function render(){
 
   const mCardsEl=document.getElementById('menuCards');
   if(mCardsEl) mCardsEl.innerHTML=p.map((x,i)=>`<div class="menu-card">${card(x,i)}</div>`).join('')||`<div class="empty">${emptyMsg}</div>`;
+    setupFastMediaAutoplay();
 
   renderCart();
   renderOrders();
@@ -3500,6 +3521,12 @@ body .ref-footer,body .ref-link-label,body .ref-link-box input{font-size:8.5px!i
 body .ref-share-main,body .ref-share{font-size:9.5px!important}
 /* Keep bottom navigation exactly as-is. */
 .bottom .nav,.bottom .nav > span[id]{font-size:9px!important;line-height:1.05!important}
+</style>
+
+<style id="high-speed-media-optimization">
+/* High-speed media: render only what is near the viewport; autoplay remains enabled. */
+.food-video{background:#eadfc8;will-change:auto;transform:translateZ(0)}
+.menu-card{content-visibility:auto;contain-intrinsic-size:430px}
 </style>
 
 <style id="compact-fullscreen-layout">
